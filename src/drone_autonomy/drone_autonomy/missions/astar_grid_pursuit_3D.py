@@ -9,6 +9,7 @@
 
 Topics:
   sub: /fmu/out/vehicle_local_position_v1  (px4_msgs/VehicleLocalPosition) - NED position & heading
+  sub: /fmu/out/vehicle_attitude            (px4_msgs/VehicleAttitude, optional) - roll, pitch, yaw
   sub: /drone/gps                           (sensor_msgs/NavSatFix) - used to set home once
   sub: /static_cam/target_gps                (sensor_msgs/NavSatFix) - target in NED via gps_to_ned
   sub: /oak/depth/image_rect_raw             (sensor_msgs/Image)
@@ -18,6 +19,7 @@ Topics:
 """
 
 import math
+import os
 import time
 from enum import Enum
 import heapq
@@ -37,6 +39,11 @@ from px4_msgs.msg import (
     VehicleCommand,
     VehicleLocalPosition,
 )
+try:
+    from px4_msgs.msg import VehicleAttitude
+    _HAS_VEHICLE_ATTITUDE = True
+except ImportError:
+    _HAS_VEHICLE_ATTITUDE = False
 
 # ---------------------------- Utilities ----------------------------
 
@@ -47,6 +54,20 @@ def radians_wrap(angle: float) -> float:
     while angle < -math.pi:
         angle += 2.0 * math.pi
     return angle
+
+
+def rotation_body_to_ned(roll: float, pitch: float, yaw: float) -> np.ndarray:
+    """
+    Rotation matrix R_wb from body (FRD) to NED: v_ned = R_wb @ v_body.
+    R_wb = Rz(yaw) @ Ry(pitch) @ Rx(roll). Angles in radians.
+    """
+    cr, sr = math.cos(roll), math.sin(roll)
+    cp, sp = math.cos(pitch), math.sin(pitch)
+    cy, sy = math.cos(yaw), math.sin(yaw)
+    Rx = np.array([[1, 0, 0], [0, cr, -sr], [0, sr, cr]], dtype=np.float64)
+    Ry = np.array([[cp, 0, sp], [0, 1, 0], [-sp, 0, cp]], dtype=np.float64)
+    Rz = np.array([[cy, -sy, 0], [sy, cy, 0], [0, 0, 1]], dtype=np.float64)
+    return Rz @ Ry @ Rx
 
 
 def gps_to_ned(lat_deg: float, lon_deg: float, alt_m: float,
@@ -209,17 +230,20 @@ class AStarGridPursuit(Node):
         self.declare_parameter('grid_resolution_m', 0.3)
         self.declare_parameter('grid_half_height_m', 5.0)   # ±half in D (altitude)
         self.declare_parameter('grid_resolution_z_m', 0.3)
-        # Depth: 1 m range, 120° FOV
-        self.declare_parameter('depth_max_m', 1.0)
+        # Depth: camera may output 0~1 normalized (1 = max range). depth_scale_m converts to real meters (e.g. 1.0 -> 3 m).
+        self.declare_parameter('depth_scale_m', 10.0)   # real_depth_m = raw_depth * depth_scale_m (e.g. raw 1.0 = 3 m)
+        self.declare_parameter('depth_max_m', 9.9)    # max range in real meters to consider for obstacles
         self.declare_parameter('depth_fov_deg', 120.0)
-        self.declare_parameter('min_valid_depth_m', 0.2)  # ignore depth < this (noise); 1.0 would ignore obstacles < 1m
+        self.declare_parameter('min_valid_depth_m', 0.2)  # ignore depth < this in real meters (noise)
         self.declare_parameter('cruise_speed_m_s', 1.0)  # reserved; actual speed from PX4 MPC (e.g. MPC_XY_CRUISE)
         self.declare_parameter('waypoint_reach_radius_m', 0.4)
-        self.declare_parameter('replan_interval_s', 2.5)
+        self.declare_parameter('replan_interval_s', 7.0)
         self.declare_parameter('inflation_cells', 1)  # obstacle inflation (blocked)
         self.declare_parameter('buffer_cells', 2)     # extra layer around inflation: flyable but high cost (avoids delay overshoot)
         self.declare_parameter('buffer_cost', 5.0)   # A* cost multiplier for buffer cells (prefer paths outside buffer)
         self.declare_parameter('debug_obstacle', True)  # log depth/grid/path diagnostics to find obstacle issues
+        self.declare_parameter('obstacle_encounter_log_dir', '')  # e.g. /path/to/missions/log; empty = disable encounter reports
+        self.declare_parameter('obstacle_encounter_throttle_s', 3.0)  # min seconds between writing encounter reports
 
         hz = float(self.get_parameter('hz').value)
         self.dt = 1.0 / max(hz, 1.0)
@@ -234,6 +258,8 @@ class AStarGridPursuit(Node):
         self.px = 0.0   # NED North
         self.py = 0.0   # NED East
         self.pz = 0.0   # NED Down
+        self.roll = 0.0   # rad, body roll
+        self.pitch = 0.0  # rad, body pitch
         self.heading = 0.0  # rad NED yaw
 
         self.home_lat = None
@@ -248,8 +274,8 @@ class AStarGridPursuit(Node):
         self.depth_width = None
         self.depth_height = None
         # Default intrinsics match Unity OakLitePublisher: 1280x720, ~120° FOV → fx=465, fy=614, cx=320, cy=320
-        self.cam_fx = 184.75
-        self.cam_fy = 184.75
+        self.cam_fx = 465
+        self.cam_fy = 614
         self.cam_cx = 320.0
         self.cam_cy = 320.0
 
@@ -257,6 +283,7 @@ class AStarGridPursuit(Node):
         self.waypoint_idx = 0
         self.last_replan_s = 0.0
         self._depth_diag_ts = 0.0    # throttle depth callback diagnostics
+        self._last_encounter_report_ts = 0.0  # throttle obstacle encounter reports
 
         # ---------- Publishers ----------
         qos = QoSProfile(
@@ -271,6 +298,8 @@ class AStarGridPursuit(Node):
 
         # ---------- Subscribers ----------
         self.create_subscription(VehicleLocalPosition, '/fmu/out/vehicle_local_position_v1', self.on_local_pos, qos)
+        if _HAS_VEHICLE_ATTITUDE:
+            self.create_subscription(VehicleAttitude, '/fmu/out/vehicle_attitude', self.on_attitude, qos)
         self.create_subscription(NavSatFix, '/drone/gps', self.on_gps, qos)
         target_topic = str(self.get_parameter('target_gps_topic').value)
         self.create_subscription(NavSatFix, target_topic, self.on_target_gps, 10)
@@ -292,9 +321,19 @@ class AStarGridPursuit(Node):
         self.xy_valid = bool(msg.xy_valid)
         self.z_valid = bool(msg.z_valid)
         self.px = float(msg.x)   # North
-        self.py = float(msg.y)  # East
+        self.py = float(msg.y)   # East
         self.pz = float(msg.z)  # Down
         self.heading = float(msg.heading)
+
+    def on_attitude(self, msg):
+        """Update roll, pitch, yaw from VehicleAttitude quaternion (q: w, x, y, z)."""
+        if not _HAS_VEHICLE_ATTITUDE:
+            return
+        q = msg.q
+        w, x, y, z = float(q[0]), float(q[1]), float(q[2]), float(q[3])
+        self.roll = math.atan2(2.0 * (w * x + y * z), 1.0 - 2.0 * (x * x + y * y))
+        self.pitch = math.asin(max(-1.0, min(1.0, 2.0 * (w * y - z * x))))
+        self.heading = math.atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z))
 
     def on_gps(self, msg: NavSatFix):
         if self.home_lat is None:
@@ -330,21 +369,23 @@ class AStarGridPursuit(Node):
             self.depth_image = None
             return
         self.depth_image = depth.reshape((msg.height, msg.width))
-        # Throttled diagnostics
+        # Throttled diagnostics (use depth_scale: raw -> real m, so valid and range are in meters)
         if self.get_parameter('debug_obstacle').value:
             t = time.time()
             if t - self._depth_diag_ts >= 2.0:
                 self._depth_diag_ts = t
+                depth_scale = float(self.get_parameter('depth_scale_m').value)
                 min_d = float(self.get_parameter('min_valid_depth_m').value)
                 depth_max = float(self.get_parameter('depth_max_m').value)
-                valid = (np.isfinite(self.depth_image) & (self.depth_image >= min_d)
-                         & (self.depth_image <= depth_max))
+                raw = self.depth_image.astype(np.float64)
+                finite = np.isfinite(raw)
+                real_m = raw * depth_scale
+                valid = (finite & (real_m >= min_d) & (real_m < depth_max))
                 n_valid = int(np.sum(valid))
-                finite = np.isfinite(self.depth_image)
-                d_min = float(np.min(self.depth_image[finite])) if np.any(finite) else float('nan')
-                d_max = float(np.max(self.depth_image[finite])) if np.any(finite) else float('nan')
+                d_min = float(np.min(real_m[finite])) if np.any(finite) else float('nan')
+                d_max = float(np.max(real_m[finite])) if np.any(finite) else float('nan')
                 self.get_logger().info(
-                    f"[depth] {msg.width}x{msg.height} {msg.encoding} | "
+                    f"[depth] {msg.width}x{msg.height} {msg.encoding} scale={depth_scale} | "
                     f"valid({min_d}~{depth_max}m)={n_valid} | range=[{d_min:.2f}, {d_max:.2f}]m"
                 )
 
@@ -357,17 +398,105 @@ class AStarGridPursuit(Node):
             self.cam_cx = float(msg.k[2])
             self.cam_cy = float(msg.k[5])
 
+    def _write_obstacle_encounter_report(
+        self,
+        depth_summary: dict,
+        steps: list,
+        result: dict,
+        obstacle_ijk: np.ndarray,
+        center_n: float, center_e: float, center_d: float,
+        half_xy: float, half_d: float, res_xy: float, res_z: float,
+    ):
+        """Write one encounter report to log dir: depth summary, processing steps, result, obstacle bearings/distances."""
+        log_dir = str(self.get_parameter('obstacle_encounter_log_dir').value).strip()
+        if not log_dir:
+            return
+        throttle_s = float(self.get_parameter('obstacle_encounter_throttle_s').value)
+        now = self.get_clock().now().nanoseconds * 1e-9
+        if now - self._last_encounter_report_ts < throttle_s:
+            return
+        self._last_encounter_report_ts = now
+        try:
+            from datetime import datetime
+            os.makedirs(log_dir, exist_ok=True)
+            ts = datetime.now().strftime('%Y-%m-%dT%H-%M-%S')
+            report_path = os.path.join(log_dir, 'encounter_%s.txt' % ts)
+            depth_npy_path = os.path.join(log_dir, 'encounter_depth_%s.npy' % ts)
+
+            lines = []
+            lines.append('=' * 60)
+            lines.append('OBSTACLE ENCOUNTER REPORT @ %s' % datetime.now().isoformat())
+            lines.append('=' * 60)
+            lines.append('')
+            lines.append('--- 1. DEPTH CAMERA INPUT ---')
+            for k, v in depth_summary.items():
+                lines.append('  %s: %s' % (k, v))
+            lines.append('')
+            lines.append('--- 2. PROCESSING STEPS ---')
+            for i, step in enumerate(steps, 1):
+                lines.append('  Step %d: %s' % (i, step))
+            lines.append('')
+            lines.append('--- 3. RESULT ---')
+            for k, v in result.items():
+                lines.append('  %s: %s' % (k, v))
+            lines.append('')
+
+            n_obs = obstacle_ijk.shape[0]
+            if n_obs == 0:
+                lines.append('--- 4. OBSTACLE RELATIVE TO DRONE --- (no obstacle cells)')
+            else:
+                offsets_n = np.empty(n_obs)
+                offsets_e = np.empty(n_obs)
+                offsets_d = np.empty(n_obs)
+                for idx in range(n_obs):
+                    i, j, k = int(obstacle_ijk[idx, 0]), int(obstacle_ijk[idx, 1]), int(obstacle_ijk[idx, 2])
+                    n, e, d = grid_to_world_3d(i, j, k, center_n, center_e, center_d,
+                                               half_xy, half_xy, half_d, res_xy, res_z)
+                    offsets_n[idx] = n - center_n
+                    offsets_e[idx] = e - center_e
+                    offsets_d[idx] = d - center_d
+                dist = np.sqrt(offsets_n**2 + offsets_e**2 + offsets_d**2)
+                bearing_rad = np.arctan2(offsets_e, offsets_n)
+                bearing_deg = np.degrees(bearing_rad)
+                lines.append('--- 4. OBSTACLE RELATIVE TO DRONE (NED) ---')
+                lines.append('  Drone position (NED): n=%.3f e=%.3f d=%.3f' % (center_n, center_e, center_d))
+                lines.append('  Obstacle cells count: %d' % n_obs)
+                lines.append('  Distance (m): min=%.3f max=%.3f mean=%.3f' % (float(np.min(dist)), float(np.max(dist)), float(np.mean(dist))))
+                lines.append('  Bearing (deg from North): min=%.1f max=%.1f' % (float(np.min(bearing_deg)), float(np.max(bearing_deg))))
+                lines.append('  Offset North (m): min=%.3f max=%.3f' % (float(np.min(offsets_n)), float(np.max(offsets_n))))
+                lines.append('  Offset East (m): min=%.3f max=%.3f' % (float(np.min(offsets_e)), float(np.max(offsets_e))))
+                lines.append('  Offset Down (m): min=%.3f max=%.3f' % (float(np.min(offsets_d)), float(np.max(offsets_d))))
+                idx_min = int(np.argmin(dist))
+                lines.append('  Closest obstacle: %.3f m at bearing %.1f deg (N=%.3f E=%.3f D=%.3f m)' % (
+                    float(dist[idx_min]),
+                    float(bearing_deg[idx_min]),
+                    float(offsets_n[idx_min]), float(offsets_e[idx_min]), float(offsets_d[idx_min]),
+                ))
+            lines.append('')
+            lines.append('=' * 60)
+
+            with open(report_path, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(lines) + '\n')
+
+            if self.depth_image is not None and self.depth_image.size > 0:
+                np.save(depth_npy_path, self.depth_image.astype(np.float32))
+
+            self.get_logger().info('[encounter] report written: %s' % report_path)
+        except OSError as e:
+            self.get_logger().warn('[encounter] failed to write report: %s' % str(e))
+
     def build_3d_grid_ned(self, inflation_override=None) -> tuple:
         """
         Build 3D occupancy grid (NED: north, east, down) centered at (px, py, pz).
-        Obstacles from depth: full image (upper + lower half); camera forward = body forward (heading).
+        Uses full attitude (roll, pitch, yaw) and R_wb = Rz(yaw) Ry(pitch) Rx(roll) for camera->body->NED.
+        Camera: Z forward, X right, Y down. Vectorized depth projection.
         Returns (grid_3d, size_n, size_e, size_d, res_xy, res_z, half_n, half_e, half_d).
-        grid_3d[i,j,k]: 0 = free, 1 = occupied.
         """
         half_xy = float(self.get_parameter('grid_half_size_m').value)
         half_d = float(self.get_parameter('grid_half_height_m').value)
         res_xy = float(self.get_parameter('grid_resolution_m').value)
         res_z = float(self.get_parameter('grid_resolution_z_m').value)
+        depth_scale = float(self.get_parameter('depth_scale_m').value)
         depth_max = float(self.get_parameter('depth_max_m').value)
         min_d = float(self.get_parameter('min_valid_depth_m').value)
         inflate = int(inflation_override if inflation_override is not None else self.get_parameter('inflation_cells').value)
@@ -383,7 +512,6 @@ class AStarGridPursuit(Node):
 
         grid = np.zeros((size_n, size_e, size_d), dtype=np.uint8)
         center_n, center_e, center_d = self.px, self.py, self.pz
-        heading = self.heading
         fx, fy = self.cam_fx, self.cam_fy
         cx, cy = self.cam_cx, self.cam_cy
 
@@ -395,16 +523,58 @@ class AStarGridPursuit(Node):
                 }
             return grid, size_n, size_e, size_d, res_xy_actual, res_z_actual, half_xy, half_xy, half_d
 
+        depth_summary = {}
+        steps = []
         h, w = self.depth_image.shape
-        # Use full depth image (upper + lower half) for 3D obstacle mapping
-        v_max = h
-        valid_depths = []
-        for v in range(0, v_max, 2):
-            for u in range(0, w, 2):
-                d = self.depth_image[v, u]
-                if np.isfinite(d) and min_d <= d < depth_max:
-                    valid_depths.append(d)
-        if valid_depths and np.std(np.array(valid_depths, dtype=np.float64)) < 0.05:
+        depth_flat_all = self.depth_image.ravel().astype(np.float64)
+        finite = np.isfinite(depth_flat_all)
+        depth_summary['shape'] = '%dx%d' % (h, w)
+        depth_summary['total_pixels'] = int(depth_flat_all.size)
+        depth_summary['finite_count'] = int(np.sum(finite))
+        if np.any(finite):
+            raw_min, raw_max = float(np.min(depth_flat_all[finite])), float(np.max(depth_flat_all[finite]))
+            depth_summary['depth_range_raw'] = '[%.3f, %.3f]' % (raw_min, raw_max)
+            depth_summary['depth_range_real_m'] = '[%.3f, %.3f]' % (raw_min * depth_scale, raw_max * depth_scale)
+            depth_summary['depth_mean_real_m'] = float(np.mean(depth_flat_all[finite])) * depth_scale
+        else:
+            depth_summary['depth_range_raw'] = 'N/A'
+            depth_summary['depth_range_real_m'] = 'N/A'
+            depth_summary['depth_mean_real_m'] = 'N/A'
+        depth_summary['depth_scale_m'] = depth_scale
+        depth_summary['min_valid_m'] = min_d
+        depth_summary['depth_max_m'] = depth_max
+        depth_summary['attitude_rad'] = 'roll=%.3f pitch=%.3f yaw=%.3f' % (self.roll, self.pitch, self.heading)
+
+        step = 2
+        uu, vv = np.meshgrid(
+            np.arange(0, w, step, dtype=np.int32),
+            np.arange(0, h, step, dtype=np.int32),
+            indexing='xy',
+        )
+        u_flat = uu.ravel()
+        v_flat = vv.ravel()
+        d_flat = self.depth_image[v_flat, u_flat].astype(np.float64)
+        d_real = d_flat * depth_scale
+
+        valid = (
+            np.isfinite(d_flat)
+            & (d_real >= min_d)
+            & (d_real < depth_max)
+        )
+        n_valid = int(np.sum(valid))
+        depth_summary['valid_in_range_count'] = n_valid
+        steps.append('Scale: raw * %.1f -> real m. Filter valid: [%.2f, %.2f) m -> n_valid=%d' % (depth_scale, min_d, depth_max, n_valid))
+        if n_valid == 0:
+            return grid, size_n, size_e, size_d, res_xy_actual, res_z_actual, half_xy, half_xy, half_d
+        near_thresh = depth_max - 0.05
+        near_mask = d_real < near_thresh
+        near_count = int(np.sum(valid & near_mask))
+        depth_summary['near_count_d_real_lt_%.2f' % near_thresh] = near_count
+        steps.append('Near-depth count (real < %.2f m): %d' % (near_thresh, near_count))
+        # Only skip when sensor is clearly at max range (almost no near depth). Do NOT require
+        # near_count >= 1% of valid - that skipped the first tree when it was small in the image.
+        if near_count < 10:
+            steps.append('Skip: near_count < 10 -> no obstacle marking')
             if self.get_parameter('debug_obstacle').value:
                 self._last_grid_diag = {
                     'depth_used': True, 'n_raw': 0, 'n_after': 0,
@@ -412,52 +582,87 @@ class AStarGridPursuit(Node):
                 }
             return grid, size_n, size_e, size_d, res_xy_actual, res_z_actual, half_xy, half_xy, half_d
 
-        for v in range(0, v_max, 2):
-            for u in range(0, w, 2):
-                d = self.depth_image[v, u]
-                if not np.isfinite(d) or d < min_d or d >= depth_max:
-                    continue
-                x_c = (u - cx) * d / fx
-                y_c = (v - cy) * d / fy
-                z_c = d
-                dn = z_c * math.cos(heading) - x_c * math.sin(heading)
-                de = z_c * math.sin(heading) + x_c * math.cos(heading)
-                dd = y_c  # camera Y down -> NED down (body frame: y down)
-                n_w = center_n + dn
-                e_w = center_e + de
-                d_w = center_d + dd
-                ijk = world_to_grid_3d(n_w, e_w, d_w, center_n, center_e, center_d,
-                                       half_xy, half_xy, half_d, res_xy_actual, res_z_actual,
-                                       size_n, size_e, size_d)
-                if ijk is not None:
-                    grid[ijk[0], ijk[1], ijk[2]] = CELL_OBSTACLE
+        steps.append('Project to camera (x_c,y_c,z_c) then body (forward,right,down) then NED with R_wb(roll,pitch,yaw)')
+        u_flat = u_flat[valid]
+        v_flat = v_flat[valid]
+        d_real = d_real[valid]
+
+        x_c = (u_flat - cx) * d_real / fx  # camera right (real m)
+        y_c = (v_flat - cy) * d_real / fy  # camera down (real m)
+        z_c = d_real                         # camera forward (real m)
+        # Body FRD: Forward=z_c, Right=x_c, Down=y_c -> v_body = (forward, right, down)
+        P_body = np.column_stack((z_c, x_c, y_c))
+
+        R_wb = rotation_body_to_ned(self.roll, self.pitch, self.heading)
+        P_ned = (R_wb @ P_body.T).T
+        P_ned[:, 0] += center_n
+        P_ned[:, 1] += center_e
+        P_ned[:, 2] += center_d
+
+        gi = ((P_ned[:, 0] - center_n + half_xy) / res_xy_actual).astype(np.int32)
+        gj = ((P_ned[:, 1] - center_e + half_xy) / res_xy_actual).astype(np.int32)
+        gk = ((P_ned[:, 2] - center_d + half_d) / res_z_actual).astype(np.int32)
+
+        in_bounds = (
+            (gi >= 0) & (gi < size_n)
+            & (gj >= 0) & (gj < size_e)
+            & (gk >= 0) & (gk < size_d)
+        )
+        n_in_bounds = int(np.sum(in_bounds))
+        steps.append('Grid indices in bounds: %d / %d' % (n_in_bounds, int(np.sum(valid))))
+        gi = gi[in_bounds]
+        gj = gj[in_bounds]
+        gk = gk[in_bounds]
+        grid[gi, gj, gk] = CELL_OBSTACLE
 
         n_raw = int(np.sum(grid == CELL_OBSTACLE))
+        steps.append('Mark obstacle cells: n_raw=%d' % n_raw)
         if inflate > 0:
             occupied = np.where(grid == CELL_OBSTACLE)
-            for idx in range(len(occupied[0])):
-                i0, j0, k0 = occupied[0][idx], occupied[1][idx], occupied[2][idx]
-                for di in range(-inflate, inflate + 1):
-                    for dj in range(-inflate, inflate + 1):
-                        for dk in range(-inflate, inflate + 1):
-                            ni, nj, nk = i0 + di, j0 + dj, k0 + dk
-                            if 0 <= ni < size_n and 0 <= nj < size_e and 0 <= nk < size_d:
-                                grid[ni, nj, nk] = CELL_OBSTACLE
-        # Buffer layer: cells within buffer_cells of obstacle become buffer (flyable but high cost)
+            oi, oj, ok = occupied[0], occupied[1], occupied[2]
+            inf_lo, inf_hi = -inflate, inflate + 1
+            for di in range(inf_lo, inf_hi):
+                for dj in range(inf_lo, inf_hi):
+                    for dk in range(inf_lo, inf_hi):
+                        ni = np.clip(oi + di, 0, size_n - 1)
+                        nj = np.clip(oj + dj, 0, size_e - 1)
+                        nk = np.clip(ok + dk, 0, size_d - 1)
+                        grid[ni, nj, nk] = CELL_OBSTACLE
         buffer_cells = int(self.get_parameter('buffer_cells').value)
         if buffer_cells > 0:
-            # For each obstacle cell, mark free neighbors within buffer_cells as buffer (2)
             obst = np.where(grid == CELL_OBSTACLE)
-            for idx in range(len(obst[0])):
-                oi, oj, ok = obst[0][idx], obst[1][idx], obst[2][idx]
-                for di in range(-buffer_cells, buffer_cells + 1):
-                    for dj in range(-buffer_cells, buffer_cells + 1):
-                        for dk in range(-buffer_cells, buffer_cells + 1):
-                            ni, nj, nk = oi + di, oj + dj, ok + dk
-                            if 0 <= ni < size_n and 0 <= nj < size_e and 0 <= nk < size_d:
-                                if grid[ni, nj, nk] == CELL_FREE:
-                                    grid[ni, nj, nk] = CELL_BUFFER
+            oi, oj, ok = obst[0], obst[1], obst[2]
+            buf_lo, buf_hi = -buffer_cells, buffer_cells + 1
+            for di in range(buf_lo, buf_hi):
+                for dj in range(buf_lo, buf_hi):
+                    for dk in range(buf_lo, buf_hi):
+                        ni = np.clip(oi + di, 0, size_n - 1)
+                        nj = np.clip(oj + dj, 0, size_e - 1)
+                        nk = np.clip(ok + dk, 0, size_d - 1)
+                        mask = grid[ni, nj, nk] == CELL_FREE
+                        grid[ni[mask], nj[mask], nk[mask]] = CELL_BUFFER
         n_after = int(np.sum(grid == CELL_OBSTACLE))
+        steps.append('Inflation: inflate_cells=%d -> n_after=%d' % (inflate, n_after))
+        steps.append('Buffer: buffer_cells=%d (free cells near obstacle marked as buffer)' % buffer_cells)
+        result = {
+            'n_raw': n_raw,
+            'n_after_inflation': n_after,
+            'grid_shape': '(%d, %d, %d)' % (size_n, size_e, size_d),
+            'res_xy_m': res_xy_actual,
+            'res_z_m': res_z_actual,
+        }
+        if n_after > 0:
+            obst = np.where(grid == CELL_OBSTACLE)
+            oi, oj, ok = obst[0], obst[1], obst[2]
+            n_obs = len(oi)
+            sample = min(n_obs, 500)
+            idx = np.linspace(0, n_obs - 1, sample, dtype=np.int32) if n_obs > 0 else np.array([], dtype=np.int32)
+            if len(idx) > 0:
+                obstacle_ijk = np.column_stack((oi[idx], oj[idx], ok[idx]))
+                self._write_obstacle_encounter_report(
+                    depth_summary, steps, result, obstacle_ijk,
+                    center_n, center_e, center_d, half_xy, half_d, res_xy_actual, res_z_actual,
+                )
         if self.get_parameter('debug_obstacle').value:
             self._last_grid_diag = {
                 'depth_used': True, 'n_raw': n_raw, 'n_after': n_after,
