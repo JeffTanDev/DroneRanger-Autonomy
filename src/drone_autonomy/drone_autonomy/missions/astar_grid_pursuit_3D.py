@@ -115,6 +115,31 @@ def grid_to_world_3d(i: int, j: int, k: int,
     return (n, e, d)
 
 
+def is_point_free_in_grid(n: float, e: float, d: float, grid, center_n: float, center_e: float, center_d: float,
+                          half_n: float, half_e: float, half_d: float, res_xy: float, res_z: float,
+                          size_n: int, size_e: int, size_d: int) -> bool:
+    """True if NED point (n,e,d) lies in grid bounds and the cell is not obstacle."""
+    ijk = world_to_grid_3d(n, e, d, center_n, center_e, center_d, half_n, half_e, half_d,
+                           res_xy, res_z, size_n, size_e, size_d)
+    if ijk is None:
+        return False
+    i, j, k = ijk
+    return grid[i, j, k] != CELL_OBSTACLE
+
+
+def is_waypoint_ahead(wn: float, we: float, wd: float,
+                      px: float, py: float, pz: float,
+                      goal_n: float, goal_e: float, goal_d: float) -> bool:
+    """True if waypoint (wn,we,wd) is ahead of current (px,py,pz) toward goal (dot product > 0)."""
+    dn = wn - px
+    de = we - py
+    dd = wd - pz
+    gn = goal_n - px
+    ge = goal_e - py
+    gd = goal_d - pz
+    return (dn * gn + de * ge + dd * gd) > 0.0
+
+
 # Grid cell values: 0=free, 1=obstacle (blocked), 2=buffer (flyable but high cost, avoid when possible)
 CELL_FREE = 0
 CELL_OBSTACLE = 1
@@ -227,9 +252,9 @@ class AStarGridPursuit(Node):
         self.declare_parameter('depth_info_topic', '/oak/depth/camera_info')
         # Local 3D planning window (centered on drone)
         self.declare_parameter('grid_half_size_m', 20.0)
-        self.declare_parameter('grid_resolution_m', 0.3)
+        self.declare_parameter('grid_resolution_m', 0.5)
         self.declare_parameter('grid_half_height_m', 5.0)   # ±half in D (altitude)
-        self.declare_parameter('grid_resolution_z_m', 0.3)
+        self.declare_parameter('grid_resolution_z_m', 0.5)
         # Depth: camera may output 0~1 normalized (1 = max range). depth_scale_m converts to real meters (e.g. 1.0 -> 3 m).
         self.declare_parameter('depth_scale_m', 10.0)   # real_depth_m = raw_depth * depth_scale_m (e.g. raw 1.0 = 3 m)
         self.declare_parameter('depth_max_m', 9.9)    # max range in real meters to consider for obstacles
@@ -237,13 +262,14 @@ class AStarGridPursuit(Node):
         self.declare_parameter('min_valid_depth_m', 0.2)  # ignore depth < this in real meters (noise)
         self.declare_parameter('cruise_speed_m_s', 1.0)  # reserved; actual speed from PX4 MPC (e.g. MPC_XY_CRUISE)
         self.declare_parameter('waypoint_reach_radius_m', 0.4)
-        self.declare_parameter('replan_interval_s', 7.0)
-        self.declare_parameter('inflation_cells', 1)  # obstacle inflation (blocked)
-        self.declare_parameter('buffer_cells', 2)     # extra layer around inflation: flyable but high cost (avoids delay overshoot)
+        self.declare_parameter('replan_interval_s', 2.0)
+        self.declare_parameter('inflation_cells', 2)  # obstacle inflation (blocked)
+        self.declare_parameter('buffer_cells', 1)     # extra layer around inflation: flyable but high cost (avoids delay overshoot)
         self.declare_parameter('buffer_cost', 5.0)   # A* cost multiplier for buffer cells (prefer paths outside buffer)
         self.declare_parameter('debug_obstacle', True)  # log depth/grid/path diagnostics to find obstacle issues
         self.declare_parameter('obstacle_encounter_log_dir', '')  # e.g. /path/to/missions/log; empty = disable encounter reports
         self.declare_parameter('obstacle_encounter_throttle_s', 3.0)  # min seconds between writing encounter reports
+        self.declare_parameter('reuse_waypoints', True)  # persist committed waypoints; prefer unchanged points on replan for smoother flight
 
         hz = float(self.get_parameter('hz').value)
         self.dt = 1.0 / max(hz, 1.0)
@@ -280,6 +306,7 @@ class AStarGridPursuit(Node):
         self.cam_cy = 320.0
 
         self.path_ned = []           # list of (n, e, d) in NED (3D waypoints)
+        self.committed_path_ned = [] # last committed path for reuse: on replan, keep waypoints that stay free
         self.waypoint_idx = 0
         self.last_replan_s = 0.0
         self._depth_diag_ts = 0.0    # throttle depth callback diagnostics
@@ -752,12 +779,53 @@ class AStarGridPursuit(Node):
         if not path_ijk:
             return []
 
-        path_ned = []
+        new_path = []
         for (i, j, k) in path_ijk:
             n, e, d = grid_to_world_3d(i, j, k, center_n, center_e, center_d,
                                        half_n, half_e, half_d, res_xy, res_z)
-            path_ned.append((n, e, d))
-        return path_ned
+            new_path.append((n, e, d))
+
+        reuse = self.get_parameter('reuse_waypoints').value
+        old_path = getattr(self, 'committed_path_ned', []) or []
+
+        if reuse and old_path:
+            def free(w):
+                return is_point_free_in_grid(
+                    w[0], w[1], w[2], grid, center_n, center_e, center_d,
+                    half_n, half_e, half_d, res_xy, res_z, size_n, size_e, size_d)
+            def ahead(w):
+                return is_waypoint_ahead(w[0], w[1], w[2], center_n, center_e, center_d, goal_n, goal_e, goal_d)
+
+            valid_old = []
+            for w in old_path:
+                if not ahead(w):
+                    continue
+                if not free(w):
+                    break
+                valid_old.append(w)
+
+            if valid_old:
+                last_n, last_e, last_d = valid_old[-1]
+                last_ijk = world_to_grid_3d(last_n, last_e, last_d, center_n, center_e, center_d,
+                                            half_n, half_e, half_d, res_xy, res_z, size_n, size_e, size_d)
+                if last_ijk is not None:
+                    tail_ijk = astar_3d(grid, last_ijk, goal_ijk, allow_diagonal_3d=True, buffer_cost=buffer_cost)
+                    if tail_ijk:
+                        tail_ned = []
+                        for (i, j, k) in tail_ijk:
+                            n, e, d = grid_to_world_3d(i, j, k, center_n, center_e, center_d,
+                                                       half_n, half_e, half_d, res_xy, res_z)
+                            tail_ned.append((n, e, d))
+                        merged = valid_old + tail_ned[1:]
+                        self.committed_path_ned = list(merged)
+                        if self.get_parameter('debug_obstacle').value:
+                            self.get_logger().info(
+                                f"[plan] reuse: valid_old={len(valid_old)} tail={len(tail_ned)} merged={len(merged)}"
+                            )
+                        return merged
+
+        self.committed_path_ned = list(new_path)
+        return new_path
 
     def publish_offboard_mode(self):
         m = OffboardControlMode()
@@ -859,6 +927,7 @@ class AStarGridPursuit(Node):
                     self.stage = Stage.PLAN_FOLLOW
                     self.stage_enter_ts = t_ns
                     self.path_ned = []
+                    self.committed_path_ned = []
                     self.waypoint_idx = 0
                     self.last_replan_s = t_s
                     self.get_logger().info("[stage] HOVER_STABLE -> PLAN_FOLLOW")
@@ -884,7 +953,8 @@ class AStarGridPursuit(Node):
             # Replan when no path or interval elapsed
             if not self.path_ned or (t_s - self.last_replan_s) >= replan_interval:
                 self.path_ned = self.plan_path_ned()
-                self.waypoint_idx = 0
+                # Start from 2nd waypoint (index 1): latency often puts drone past 1st, avoids flying backward
+                self.waypoint_idx = 1 if len(self.path_ned) >= 2 else 0
                 self.last_replan_s = t_s
                 if self.path_ned:
                     self.get_logger().info(f"[plan] 3D A* path length={len(self.path_ned)}")
