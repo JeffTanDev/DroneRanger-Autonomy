@@ -72,6 +72,30 @@
   - 作用：将栅格 A\* 扩展到 3D（包含高度维度）的追踪任务。
   - 主要内容：在 3D 体素网格上运行 A\* 搜索的函数和相关栅格构建逻辑，适用于更复杂的三维障碍环境。
 
+#### `haoran_alg_update` 目录（Unity 避障 & 追踪模板）
+
+- **`src/drone_autonomy/drone_autonomy/haoran_alg_update/__init__.py`**
+  - 作用：子包初始化，导出 `haoran_unity_pursuit` 等模块供 `setup.py` 入口点使用。
+
+- **`src/drone_autonomy/drone_autonomy/haoran_alg_update/haoran_unity_pursuit.py`**
+  - 作用：面向 Unity 仿真的**水平 VFH+ 避障 + 目标追踪**任务节点（单文件版）。
+  - 主要类：`HaoranUnityPursuit`，状态机 WARMUP → ARMING → TAKEOFF → HOVER_STABLE → EXECUTE。
+  - 核心逻辑：深度图水平扇区、VFH+ 选安全航向、速度门控与 waypoint 步长；无深度/无扇区时可退化为直线追目标或 yaw 扫描。
+  - 话题：订阅 `/drone/gps`、`/static_cam/target_gps`、`/oak/depth/*`、`/fmu/out/vehicle_local_position_v1`；发布 `/fmu/in/offboard_control_mode`、`/fmu/in/trajectory_setpoint`、`/fmu/in/vehicle_command`。
+
+- **`src/drone_autonomy/drone_autonomy/haoran_alg_update/haoran_unity_pursuit02.py`**
+  - 作用：在 `haoran_unity_pursuit` 基础上的**增强版**：前方全角度（2D 扇区）、上下避障、大障碍物防护。
+  - 主要类：同上 `HaoranUnityPursuit`（节点名相同，入口脚本不同）。
+  - 核心逻辑：
+    - **2D 扇区**：深度图按水平×垂直划分网格，VFH 在水平+俯仰方向选最优方向，支持斜上/斜下飞行。
+    - **上下避障**：根据图像上/下条带最近距离，上方近→向下避让，下方近→向上避让，微调高度 setpoint。
+    - **大障碍物**：前方全局最近距离低于阈值时视为“墙”，停止前进并每周期指令爬升，避免撞大物体。
+    - **扇区膨胀**：近障扇区向邻格膨胀，避免从大物体边缘钻过。
+  - 话题：与 `haoran_unity_pursuit` 一致。
+
+- **`src/drone_autonomy/drone_autonomy/haoran_alg_update/march_10_report.txt`**
+  - 作用：算法进展与测试记录文档（纯文本）。
+
 ---
 
 ### `src/offboard_avoidance_unity/`
@@ -186,6 +210,10 @@
     - `astar_grid_pursuit.py`：基于 2D 栅格 A\* 的追踪任务，使用深度图构建占据栅格和 world grid，规划路径并控制 PX4。
     - `rrt_pursuit_single.py`：RRT-like 直线步进追踪 + 前向深度避障的任务节点。
     - 其他 `astar_*` 变体：不同记忆/3D 扩展等 A\* 实现（如 `astar_world_buffer.py`、`astar_no_memory_conservative.py`、`astar_grid_pursuit_3D.py`）。
+  - `drone_autonomy/haoran_alg_update/`
+    - `haoran_unity_pursuit.py`：Unity 仿真用 VFH+ 水平避障 + 目标追踪节点（waypoint 步长、fallback 直线追目标）。
+    - `haoran_unity_pursuit02.py`：增强版，2D 扇区全角度、上下避障、大障碍停+爬升、扇区膨胀。
+    - `march_10_report.txt`：算法记录文档。
   - `launch/`
     - 各类简单起飞和任务的启动文件（如 `simple_takeoff.launch.py`）。
   - `docs/Algorithm_Design_Breakthrough.md`
@@ -239,6 +267,31 @@
 - **功能**
   - 订阅 `/oak/depth/image_rect_raw` 和 `/drone/odom`。
   - 在每个航点之间飞行时，对前方深度图做障碍检测，如有障碍则添加侧向偏移 `avoid_offset` 实现绕障。
+
+### `HaoranUnityPursuit` / `haoran_unity_pursuit02`（`drone_autonomy/haoran_alg_update/`）
+
+- **定位**
+  - 专为 Unity 仿真设计的避障 + 目标追踪模板节点，与现有 PX4 Offboard、Unity 话题接口一致，便于在 Unity 场景中直接测试算法。
+- **输入话题**
+  - `/fmu/out/vehicle_local_position_v1`：PX4 局部 NED 位置与航向。
+  - `/drone/gps`：当前无人机 GPS，首次收到即设为 home。
+  - `/static_cam/target_gps`：Unity 静态相机生成的目标点（可配置话题名）。
+  - `/oak/depth/image_rect_raw`、`/oak/depth/camera_info`：Unity OAK 深度图。
+- **输出话题**
+  - `/fmu/in/offboard_control_mode`、`/fmu/in/trajectory_setpoint`、`/fmu/in/vehicle_command`：PX4 Offboard 控制。
+- **状态机**
+  - WARMUP → ARMING → TAKEOFF → HOVER_STABLE → EXECUTE（算法在 EXECUTE 阶段工作）。
+- **`haoran_unity_pursuit.py`（基础版）**
+  - 水平 VFH+：深度图按水平 FOV 划分扇区，选“安全且朝向目标”的航向；按障碍距离做速度门控，直接给出前方 waypoint 步长由 PX4 飞过去。
+  - 无深度/无可行扇区时：可退化为直线追目标（fallback）或原地 yaw 扫描。
+  - 主要可调参数：`hfov_deg`、`num_sectors`、`min_clear_dist_m`、`stop_dist_m`、`max_speed_m_s`、`fallback_to_goal_when_no_depth`、`fallback_speed_m_s` 等。
+- **`haoran_unity_pursuit02.py`（增强版）**
+  - **前方全角度**：2D 扇区网格（水平×垂直），VFH 在水平+俯仰方向选方向，支持斜上/斜下飞行；参数 `use_2d_sectors`、`vfov_deg`、`num_sectors_vertical`。
+  - **上下避障**：图像上/下条带最近距离，上方近→向下避让、下方近→向上避让，微调高度；参数 `vertical_avoid_enable`、`vertical_near_m`、`vertical_offset_max_m`。
+  - **大障碍物防护**：前方全局最近距离低于 `large_obstacle_threshold_m` 时视为“墙”，停止水平前进并每周期爬升 `large_obstacle_climb_m`，避免撞比视野大的物体。
+  - **扇区膨胀**：近障扇区向邻格膨胀（`sector_inflation_cells`），避免从大物体边缘钻过。
+- **运行示例**
+  - `ros2 run drone_autonomy haoran_unity_pursuit` 或 `ros2 run drone_autonomy haoran_unity_pursuit02`（需在 `setup.py` 中注册对应 entry point）。
 
 ---
 
