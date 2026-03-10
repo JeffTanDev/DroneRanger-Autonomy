@@ -124,6 +124,10 @@ class HaoranUnityPursuit(Node):
         self.declare_parameter("max_speed_m_s", 3.0)          # 最大平面速度（用于 gating）
         self.declare_parameter("min_speed_m_s", 0.5)          # 最小前进速度（安全但不太慢）
         self.declare_parameter("yaw_scan_speed_deg_s", 30.0)  # 扫描时的 yaw 角速度（度/秒）
+        # 当深度不可用/无法选出安全扇区时，是否退化为“直线追目标”（方便先跑通测试）
+        self.declare_parameter("fallback_to_goal_when_no_depth", True)
+        self.declare_parameter("fallback_speed_m_s", 1.0)
+        self.declare_parameter("debug_log_interval_s", 1.0)
 
         hz = float(self.get_parameter("hz").value)
         self.dt = 1.0 / max(hz, 1.0)
@@ -158,6 +162,7 @@ class HaoranUnityPursuit(Node):
         self.depth_width = None
         self.depth_height = None
         self.last_depth_log_s = 0.0
+        self.last_debug_log_s = 0.0
 
         # ---------- Publishers ----------
         qos = QoSProfile(
@@ -502,24 +507,46 @@ class HaoranUnityPursuit(Node):
         vN = goalN - self.px
         vE = goalE - self.py
         goal_yaw = radians_wrap(math.atan2(vE, vN))
+        goal_dist_xy = math.hypot(vN, vE)
 
         # 2) 用 VFH+ 风格选择一个安全方向
         best_yaw, best_dist = self._vfh_choose_direction(goal_yaw)
 
         zD_goal = goalD
 
-        # 3) 如果没有任何可行扇区：执行主动 yaw 扫描，保持位置不动，只转向
+        # 3) 如果深度不可用/没有任何可行扇区：
+        #    - 默认退化为“直线追目标”（先验证会动、能追目标）
+        #    - 如关闭 fallback，则保持原来的 yaw 扫描策略
         if best_yaw is None or best_dist is None:
-            yaw_scan_speed_deg_s = float(
-                self.get_parameter("yaw_scan_speed_deg_s").value
-            )
+            fallback = bool(self.get_parameter("fallback_to_goal_when_no_depth").value)
+            if fallback:
+                fallback_speed = float(self.get_parameter("fallback_speed_m_s").value)
+                dt = self.dt
+                step_xy = max(0.0, fallback_speed) * dt
+                if goal_dist_xy > 1e-3:
+                    dirN = vN / goal_dist_xy
+                    dirE = vE / goal_dist_xy
+                    spN = self.px + dirN * step_xy
+                    spE = self.py + dirE * step_xy
+                else:
+                    spN = self.px
+                    spE = self.py
+                spD = zD_goal
+                spYaw = goal_yaw
+                self._debug_throttled(
+                    f"[algo] no_depth_or_no_sector -> fallback_to_goal | dist_xy={goal_dist_xy:.2f}m "
+                    f"| step={step_xy:.2f}m | yaw={spYaw:.2f}"
+                )
+                return spN, spE, spD, spYaw
+
+            yaw_scan_speed_deg_s = float(self.get_parameter("yaw_scan_speed_deg_s").value)
             yaw_scan_speed = math.radians(yaw_scan_speed_deg_s)
-            # 简单起见：总是顺时针旋转
             dt = self.dt
             spYaw = radians_wrap(self.heading + yaw_scan_speed * dt)
             spN = self.px
             spE = self.py
             spD = zD_goal
+            self._debug_throttled("[algo] no_depth_or_no_sector -> yaw_scan_hold")
             return spN, spE, spD, spYaw
 
         # 4) 根据最近障碍距离做速度门控 -> 决定本周期的前进步长
@@ -550,7 +577,18 @@ class HaoranUnityPursuit(Node):
         spE = self.py + dirE * step_xy
         spD = zD_goal
         spYaw = best_yaw
+        self._debug_throttled(
+            f"[algo] move | goal_dist_xy={goal_dist_xy:.2f}m | best_dist={best_dist:.2f}m | speed={speed:.2f}m/s"
+        )
         return spN, spE, spD, spYaw
+
+    def _debug_throttled(self, msg: str):
+        """节流输出，避免刷屏。"""
+        interval = float(self.get_parameter("debug_log_interval_s").value)
+        now = time.time()
+        if now - self.last_debug_log_s >= max(0.1, interval):
+            self.last_debug_log_s = now
+            self.get_logger().info(msg)
 
     # ---------------- Main Loop ----------------
 

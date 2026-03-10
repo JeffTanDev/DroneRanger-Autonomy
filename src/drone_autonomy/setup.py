@@ -29,6 +29,8 @@ setup(
             'rrt_pursuit_single_v1_1 = drone_autonomy.missions.rrt_pursuit_single_v1_1:main',
             'astar_grid_pursuit = drone_autonomy.missions.astar_grid_pursuit:main',
             'astar_grid_pursuit_3d = drone_autonomy.missions.astar_grid_pursuit_3D:main',
+            # Haoran custom algorithm entry point (Unity test friendly)
+            'haoran_unity_pursuit = drone_autonomy.haoran_alg_update.haoran_unity_pursuit:main',
         ],
     },
 )
