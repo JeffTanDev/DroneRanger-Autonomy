@@ -549,27 +549,39 @@ class HaoranUnityPursuit(Node):
             self._debug_throttled("[algo] no_depth_or_no_sector -> yaw_scan_hold")
             return spN, spE, spD, spYaw
 
-        # 4) 根据最近障碍距离做速度门控 -> 决定本周期的前进步长
-        max_speed = float(self.get_parameter("max_speed_m_s").value)
-        min_speed = float(self.get_parameter("min_speed_m_s").value)
+        # 4) 根据最近障碍距离和与目标的距离，决定“这一次要给 PX4 的 waypoint”
+        #    思路对齐 astar_grid_pursuit：直接给一个位置 setpoint，让 PX4 用 MPC_XY_CRUISE 控制速度，
+        #    而不是我们自己每帧只走一个很小的步长。
+        max_step_ahead_m = float(self.get_parameter("max_speed_m_s").value) * 3.0
+        min_step_ahead_m = float(self.get_parameter("min_speed_m_s").value)
         min_clear = float(self.get_parameter("min_clear_dist_m").value)
         stop_dist = float(self.get_parameter("stop_dist_m").value)
 
+        # 如果前面太近有障碍，直接停在原地（高度仍跟随目标高度）
         if best_dist <= stop_dist:
-            speed = 0.0
+            spN = self.px
+            spE = self.py
+            spD = zD_goal
+            spYaw = best_yaw
+            self._debug_throttled(
+                f"[algo] stop | best_dist={best_dist:.2f}m <= stop_dist={stop_dist:.2f}m"
+            )
+            return spN, spE, spD, spYaw
+
+        # 根据障碍距离和目标距离，确定这次 waypoint 距离当前机体多远
+        # 1) 先按障碍距离 gate：离障碍越近，step 越小
+        if best_dist < min_clear:
+            ratio = (best_dist - stop_dist) / max(min_clear - stop_dist, 1e-3)
+            step_from_obstacle = min_step_ahead_m + (max_step_ahead_m - min_step_ahead_m) * max(
+                0.0, min(1.0, ratio)
+            )
         else:
-            # 距离在 [stop_dist, min_clear] 之间时，从 0 插值到 min_speed
-            if best_dist < min_clear:
-                ratio = (best_dist - stop_dist) / max(min_clear - stop_dist, 1e-3)
-                speed = min_speed * max(0.0, min(1.0, ratio))
-            else:
-                # 距离 >= min_clear：从 min_speed 平滑增加到 max_speed（可根据需要再缩放）
-                speed = max_speed
+            step_from_obstacle = max_step_ahead_m
 
-        dt = self.dt
-        step_xy = speed * dt
+        # 2) 再按目标距离 gate：不能比到目标距离还远
+        step_xy = max(min_step_ahead_m, min(step_from_obstacle, goal_dist_xy))
 
-        # 5) 沿着选中的方向前进一步（在 NED 平面上），高度跟随目标高度
+        # 5) 沿着选中的方向给出一个“前方 step_xy 米”的 waypoint，高度跟随目标高度
         dirN = math.cos(best_yaw)
         dirE = math.sin(best_yaw)
 
@@ -578,7 +590,7 @@ class HaoranUnityPursuit(Node):
         spD = zD_goal
         spYaw = best_yaw
         self._debug_throttled(
-            f"[algo] move | goal_dist_xy={goal_dist_xy:.2f}m | best_dist={best_dist:.2f}m | speed={speed:.2f}m/s"
+            f"[algo] move | goal_dist_xy={goal_dist_xy:.2f}m | best_dist={best_dist:.2f}m | step_xy={step_xy:.2f}m"
         )
         return spN, spE, spD, spYaw
 
