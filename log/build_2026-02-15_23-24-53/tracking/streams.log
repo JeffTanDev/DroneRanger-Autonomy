@@ -1,0 +1,36 @@
+[0.628s] Invoking command in '/home/parallels/drone_local/drone_ws/build/tracking': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/parallels/drone_local/drone_ws/build/tracking/build
+[0.812s] running develop
+[0.912s] Removing /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking.egg-link (link to .)
+[0.943s] Invoked command in '/home/parallels/drone_local/drone_ws/build/tracking' returned '0': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/parallels/drone_local/drone_ws/build/tracking/build
+[0.944s] Invoking command in '/home/parallels/drone_local/drone_ws/src/tracking': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/tracking build --build-base /home/parallels/drone_local/drone_ws/build/tracking/build install --record /home/parallels/drone_local/drone_ws/build/tracking/install.log --single-version-externally-managed install_data --force
+[1.100s] running egg_info
+[1.100s] writing ../../build/tracking/tracking.egg-info/PKG-INFO
+[1.101s] writing dependency_links to ../../build/tracking/tracking.egg-info/dependency_links.txt
+[1.101s] writing entry points to ../../build/tracking/tracking.egg-info/entry_points.txt
+[1.101s] writing requirements to ../../build/tracking/tracking.egg-info/requires.txt
+[1.101s] writing top-level names to ../../build/tracking/tracking.egg-info/top_level.txt
+[1.104s] reading manifest file '../../build/tracking/tracking.egg-info/SOURCES.txt'
+[1.104s] writing manifest file '../../build/tracking/tracking.egg-info/SOURCES.txt'
+[1.104s] running build
+[1.104s] running build_py
+[1.104s] creating /home/parallels/drone_local/drone_ws/build/tracking/build
+[1.104s] creating /home/parallels/drone_local/drone_ws/build/tracking/build/lib
+[1.105s] creating /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking
+[1.105s] copying tracking/tracker_node.py -> /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking
+[1.105s] copying tracking/__init__.py -> /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking
+[1.105s] running install
+[1.105s] running install_lib
+[1.105s] creating /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking
+[1.105s] copying /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking/tracker_node.py -> /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking
+[1.105s] copying /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking/__init__.py -> /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking
+[1.106s] byte-compiling /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking/tracker_node.py to tracker_node.cpython-310.pyc
+[1.106s] byte-compiling /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking/__init__.py to __init__.cpython-310.pyc
+[1.106s] running install_data
+[1.106s] copying resource/tracking -> /home/parallels/drone_local/drone_ws/install/tracking/share/ament_index/resource_index/packages
+[1.106s] copying package.xml -> /home/parallels/drone_local/drone_ws/install/tracking/share/tracking
+[1.106s] running install_egg_info
+[1.108s] Copying ../../build/tracking/tracking.egg-info to /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking-0.0.0-py3.10.egg-info
+[1.110s] running install_scripts
+[1.127s] Installing tracker script to /home/parallels/drone_local/drone_ws/install/tracking/lib/tracking
+[1.128s] writing list of installed files to '/home/parallels/drone_local/drone_ws/build/tracking/install.log'
+[1.156s] Invoked command in '/home/parallels/drone_local/drone_ws/src/tracking' returned '0': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/tracking build --build-base /home/parallels/drone_local/drone_ws/build/tracking/build install --record /home/parallels/drone_local/drone_ws/build/tracking/install.log --single-version-externally-managed install_data --force

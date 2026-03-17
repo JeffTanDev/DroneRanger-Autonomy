@@ -1,0 +1,17 @@
+[0.701s] Invoking command in '/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/build --no-deps symlink_data
+[0.877s] running develop
+[0.968s] running egg_info
+[0.968s] writing offboard_avoidance_unity.egg-info/PKG-INFO
+[0.968s] writing dependency_links to offboard_avoidance_unity.egg-info/dependency_links.txt
+[0.968s] writing entry points to offboard_avoidance_unity.egg-info/entry_points.txt
+[0.969s] writing requirements to offboard_avoidance_unity.egg-info/requires.txt
+[0.969s] writing top-level names to offboard_avoidance_unity.egg-info/top_level.txt
+[0.969s] reading manifest file 'offboard_avoidance_unity.egg-info/SOURCES.txt'
+[0.970s] writing manifest file 'offboard_avoidance_unity.egg-info/SOURCES.txt'
+[0.971s] running build_ext
+[0.971s] Creating /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/python3.10/site-packages/offboard-avoidance-unity.egg-link (link to .)
+[0.972s] Installing unity_house_avoidance script to /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/offboard_avoidance_unity
+[0.972s] 
+[0.972s] Installed /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity
+[0.972s] running symlink_data
+[0.991s] Invoked command in '/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity' returned '0': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/build --no-deps symlink_data

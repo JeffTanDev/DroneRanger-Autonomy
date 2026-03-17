@@ -1,0 +1,1 @@
+/home/parallels/drone_local/drone_ws/src/px4_ros_com/src/examples/offboard_py/offboard_control.py

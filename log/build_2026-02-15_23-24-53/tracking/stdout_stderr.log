@@ -1,0 +1,32 @@
+running develop
+Removing /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking.egg-link (link to .)
+running egg_info
+writing ../../build/tracking/tracking.egg-info/PKG-INFO
+writing dependency_links to ../../build/tracking/tracking.egg-info/dependency_links.txt
+writing entry points to ../../build/tracking/tracking.egg-info/entry_points.txt
+writing requirements to ../../build/tracking/tracking.egg-info/requires.txt
+writing top-level names to ../../build/tracking/tracking.egg-info/top_level.txt
+reading manifest file '../../build/tracking/tracking.egg-info/SOURCES.txt'
+writing manifest file '../../build/tracking/tracking.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/parallels/drone_local/drone_ws/build/tracking/build
+creating /home/parallels/drone_local/drone_ws/build/tracking/build/lib
+creating /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking
+copying tracking/tracker_node.py -> /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking
+copying tracking/__init__.py -> /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking
+running install
+running install_lib
+creating /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking
+copying /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking/tracker_node.py -> /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking
+copying /home/parallels/drone_local/drone_ws/build/tracking/build/lib/tracking/__init__.py -> /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking
+byte-compiling /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking/tracker_node.py to tracker_node.cpython-310.pyc
+byte-compiling /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking/__init__.py to __init__.cpython-310.pyc
+running install_data
+copying resource/tracking -> /home/parallels/drone_local/drone_ws/install/tracking/share/ament_index/resource_index/packages
+copying package.xml -> /home/parallels/drone_local/drone_ws/install/tracking/share/tracking
+running install_egg_info
+Copying ../../build/tracking/tracking.egg-info to /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking-0.0.0-py3.10.egg-info
+running install_scripts
+Installing tracker script to /home/parallels/drone_local/drone_ws/install/tracking/lib/tracking
+writing list of installed files to '/home/parallels/drone_local/drone_ws/build/tracking/install.log'

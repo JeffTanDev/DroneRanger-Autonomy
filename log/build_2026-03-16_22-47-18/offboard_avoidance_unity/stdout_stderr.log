@@ -1,0 +1,17 @@
+running develop
+running egg_info
+writing offboard_avoidance_unity.egg-info/PKG-INFO
+writing dependency_links to offboard_avoidance_unity.egg-info/dependency_links.txt
+writing entry points to offboard_avoidance_unity.egg-info/entry_points.txt
+writing requirements to offboard_avoidance_unity.egg-info/requires.txt
+writing top-level names to offboard_avoidance_unity.egg-info/top_level.txt
+reading manifest file 'offboard_avoidance_unity.egg-info/SOURCES.txt'
+writing manifest file 'offboard_avoidance_unity.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/python3.10/site-packages/offboard-avoidance-unity.egg-link (link to .)
+Installing unity_house_avoidance script to /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/offboard_avoidance_unity
+
+Installed /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity
+running symlink_data
+symbolically linking /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/resource/offboard_avoidance_unity -> /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/share/ament_index/resource_index/packages
+symbolically linking /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/package.xml -> /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/share/offboard_avoidance_unity

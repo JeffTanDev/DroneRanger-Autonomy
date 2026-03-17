@@ -1,0 +1,28 @@
+running develop
+running egg_info
+writing drone_autonomy.egg-info/PKG-INFO
+writing dependency_links to drone_autonomy.egg-info/dependency_links.txt
+writing entry points to drone_autonomy.egg-info/entry_points.txt
+writing requirements to drone_autonomy.egg-info/requires.txt
+writing top-level names to drone_autonomy.egg-info/top_level.txt
+reading manifest file 'drone_autonomy.egg-info/SOURCES.txt'
+writing manifest file 'drone_autonomy.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone-autonomy.egg-link (link to .)
+Installing circle_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing data_recorder script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing drone_controller script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing figure_eight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing forward_mission script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing house_inspection script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing mission_executor script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing obstacle_detector script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing orbit_point script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing pursuit_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing rrt_pursuit_single script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing simple_takeoff script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing square_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+Installing waypoint_mission script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+
+Installed /home/parallels/drone_local/drone_ws/build/drone_autonomy
+running symlink_data

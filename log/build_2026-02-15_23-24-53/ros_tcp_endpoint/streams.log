@@ -1,0 +1,72 @@
+[0.592s] Invoking command in '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build
+[0.766s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[0.766s]   warnings.warn(
+[0.793s] running develop
+[0.906s] Removing /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros-tcp-endpoint.egg-link (link to .)
+[0.935s] Invoked command in '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint' returned '0': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build
+[0.937s] Invoking command in '/home/parallels/drone_local/drone_ws/src/ROS-TCP-Endpoint': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ros_tcp_endpoint build --build-base /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build install --record /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/install.log --install-scripts $base/lib/ros_tcp_endpoint --single-version-externally-managed install_data --force
+[1.086s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[1.089s]   warnings.warn(
+[1.095s] running egg_info
+[1.095s] writing ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/PKG-INFO
+[1.096s] writing dependency_links to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/dependency_links.txt
+[1.096s] writing entry points to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/entry_points.txt
+[1.096s] writing requirements to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/requires.txt
+[1.097s] writing top-level names to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/top_level.txt
+[1.100s] reading manifest file '../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/SOURCES.txt'
+[1.101s] adding license file 'LICENSE'
+[1.101s] writing manifest file '../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/SOURCES.txt'
+[1.101s] running build
+[1.101s] running build_py
+[1.103s] creating /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build
+[1.103s] creating /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib
+[1.103s] creating /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.103s] copying ros_tcp_endpoint/unity_service.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.104s] copying ros_tcp_endpoint/thread_pauser.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.105s] copying ros_tcp_endpoint/publisher.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.109s] copying ros_tcp_endpoint/server.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.109s] copying ros_tcp_endpoint/communication.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.109s] copying ros_tcp_endpoint/tcp_sender.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.109s] copying ros_tcp_endpoint/subscriber.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.114s] copying ros_tcp_endpoint/client.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.114s] copying ros_tcp_endpoint/default_server_endpoint.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.115s] copying ros_tcp_endpoint/service.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.115s] copying ros_tcp_endpoint/__init__.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.115s] copying ros_tcp_endpoint/exceptions.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[1.116s] running install
+[1.116s] running install_lib
+[1.116s] creating /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.117s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/unity_service.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.117s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/thread_pauser.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.117s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/publisher.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.117s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/server.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.118s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/communication.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.118s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/tcp_sender.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.118s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/subscriber.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.118s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/client.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.119s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/default_server_endpoint.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.119s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/service.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.119s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/__init__.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.119s] copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/exceptions.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[1.119s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/unity_service.py to unity_service.cpython-310.pyc
+[1.120s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/thread_pauser.py to thread_pauser.cpython-310.pyc
+[1.120s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/publisher.py to publisher.cpython-310.pyc
+[1.120s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/server.py to server.cpython-310.pyc
+[1.120s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/communication.py to communication.cpython-310.pyc
+[1.121s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/tcp_sender.py to tcp_sender.cpython-310.pyc
+[1.121s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/subscriber.py to subscriber.cpython-310.pyc
+[1.125s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/client.py to client.cpython-310.pyc
+[1.126s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/default_server_endpoint.py to default_server_endpoint.cpython-310.pyc
+[1.127s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/service.py to service.cpython-310.pyc
+[1.128s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/__init__.py to __init__.cpython-310.pyc
+[1.128s] byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/exceptions.py to exceptions.cpython-310.pyc
+[1.128s] running install_data
+[1.128s] copying resource/ros_tcp_endpoint -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ament_index/resource_index/packages
+[1.129s] copying package.xml -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ros_tcp_endpoint
+[1.129s] copying launch/endpoint.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ros_tcp_endpoint/launch
+[1.132s] running install_egg_info
+[1.132s] Copying ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info to /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint-0.0.1-py3.10.egg-info
+[1.133s] running install_scripts
+[1.152s] Installing default_server_endpoint script to /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/ros_tcp_endpoint
+[1.152s] writing list of installed files to '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/install.log'
+[1.174s] Invoked command in '/home/parallels/drone_local/drone_ws/src/ROS-TCP-Endpoint' returned '0': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ros_tcp_endpoint build --build-base /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build install --record /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/install.log --install-scripts $base/lib/ros_tcp_endpoint --single-version-externally-managed install_data --force

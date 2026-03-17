@@ -1,0 +1,1 @@
+/home/parallels/drone_local/drone_ws/src/drone_autonomy/setup.py

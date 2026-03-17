@@ -1,0 +1,53 @@
+[0.461s] Invoking command in '/home/parallels/drone_local/drone_ws/build/offboard_test': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_test/build
+[0.731s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[0.731s]   warnings.warn(
+[0.751s] running develop
+[0.845s] Removing /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard-test.egg-link (link to .)
+[0.863s] Invoked command in '/home/parallels/drone_local/drone_ws/build/offboard_test' returned '0': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_test/build
+[0.864s] Invoking command in '/home/parallels/drone_local/drone_ws/src/offboard_test': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/offboard_test build --build-base /home/parallels/drone_local/drone_ws/build/offboard_test/build install --record /home/parallels/drone_local/drone_ws/build/offboard_test/install.log --install-scripts $base/lib/offboard_test --single-version-externally-managed install_data --force
+[1.009s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[1.009s]   warnings.warn(
+[1.013s] running egg_info
+[1.013s] writing ../../build/offboard_test/offboard_test.egg-info/PKG-INFO
+[1.014s] writing dependency_links to ../../build/offboard_test/offboard_test.egg-info/dependency_links.txt
+[1.014s] writing entry points to ../../build/offboard_test/offboard_test.egg-info/entry_points.txt
+[1.014s] writing requirements to ../../build/offboard_test/offboard_test.egg-info/requires.txt
+[1.014s] writing top-level names to ../../build/offboard_test/offboard_test.egg-info/top_level.txt
+[1.015s] reading manifest file '../../build/offboard_test/offboard_test.egg-info/SOURCES.txt'
+[1.015s] writing manifest file '../../build/offboard_test/offboard_test.egg-info/SOURCES.txt'
+[1.016s] running build
+[1.016s] running build_py
+[1.016s] copying offboard_test/offboard_orbit_mission.py -> /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test
+[1.016s] copying offboard_test/offboard_square_mission.py -> /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test
+[1.017s] running install
+[1.020s] running install_lib
+[1.021s] creating /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/offboard_takeoff.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/obstacle_avoidance_mission.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/obstacle_avoidance_dynamic.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/offboard_orbit_mission.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/obstacle_publisher.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/offboard_square_mission.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/__init__.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+[1.021s] byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/offboard_takeoff.py to offboard_takeoff.cpython-310.pyc
+[1.021s] byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/obstacle_avoidance_mission.py to obstacle_avoidance_mission.cpython-310.pyc
+[1.021s] byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/obstacle_avoidance_dynamic.py to obstacle_avoidance_dynamic.cpython-310.pyc
+[1.021s] byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/offboard_orbit_mission.py to offboard_orbit_mission.cpython-310.pyc
+[1.021s] byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/obstacle_publisher.py to obstacle_publisher.cpython-310.pyc
+[1.021s] byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/offboard_square_mission.py to offboard_square_mission.cpython-310.pyc
+[1.022s] byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/__init__.py to __init__.cpython-310.pyc
+[1.022s] running install_data
+[1.022s] copying resource/offboard_test -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/ament_index/resource_index/packages
+[1.023s] copying package.xml -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/offboard_test
+[1.024s] copying launch/obstacle_mission.launch.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/offboard_test/launch
+[1.024s] copying launch/around_house_mission.launch.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/offboard_test/launch
+[1.024s] running install_egg_info
+[1.026s] Copying ../../build/offboard_test/offboard_test.egg-info to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test-0.0.0-py3.10.egg-info
+[1.027s] running install_scripts
+[1.044s] Installing obstacle_avoidance_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.044s] Installing obstacle_publisher script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.044s] Installing offboard_orbit_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.044s] Installing offboard_square_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.044s] Installing offboard_takeoff script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.044s] writing list of installed files to '/home/parallels/drone_local/drone_ws/build/offboard_test/install.log'
+[1.060s] Invoked command in '/home/parallels/drone_local/drone_ws/src/offboard_test' returned '0': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/offboard_test build --build-base /home/parallels/drone_local/drone_ws/build/offboard_test/build install --record /home/parallels/drone_local/drone_ws/build/offboard_test/install.log --install-scripts $base/lib/offboard_test --single-version-externally-managed install_data --force

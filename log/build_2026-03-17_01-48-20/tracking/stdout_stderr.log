@@ -1,0 +1,15 @@
+running develop
+running egg_info
+writing tracking.egg-info/PKG-INFO
+writing dependency_links to tracking.egg-info/dependency_links.txt
+writing entry points to tracking.egg-info/entry_points.txt
+writing requirements to tracking.egg-info/requires.txt
+writing top-level names to tracking.egg-info/top_level.txt
+reading manifest file 'tracking.egg-info/SOURCES.txt'
+writing manifest file 'tracking.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking.egg-link (link to .)
+Installing tracker script to /home/parallels/drone_local/drone_ws/install/tracking/lib/tracking
+
+Installed /home/parallels/drone_local/drone_ws/build/tracking
+running symlink_data

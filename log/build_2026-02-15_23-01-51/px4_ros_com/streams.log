@@ -1,0 +1,173 @@
+[0.189s] Invoking command in '/home/parallels/drone_local/drone_ws/build/px4_ros_com': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint:/home/parallels/drone_local/drone_ws/install/offboard_test:/opt/ros/humble LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib /usr/bin/cmake /home/parallels/drone_local/drone_ws/src/px4_ros_com -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/parallels/drone_local/drone_ws/install/px4_ros_com
+[0.234s] -- The C compiler identification is GNU 11.4.0
+[0.296s] -- The CXX compiler identification is GNU 11.4.0
+[0.305s] -- Detecting C compiler ABI info
+[0.375s] -- Detecting C compiler ABI info - done
+[0.381s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.382s] -- Detecting C compile features
+[0.382s] -- Detecting C compile features - done
+[0.384s] -- Detecting CXX compiler ABI info
+[0.448s] -- Detecting CXX compiler ABI info - done
+[0.452s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.452s] -- Detecting CXX compile features
+[0.453s] -- Detecting CXX compile features - done
+[0.456s] -- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.560s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.603s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.627s] -- Found builtin_interfaces: 1.2.2 (/opt/ros/humble/share/builtin_interfaces/cmake)
+[0.664s] -- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.667s] -- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.674s] -- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.684s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.697s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.710s] -- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)
+[0.719s] -- Found Eigen3: TRUE (found version "3.4.0") 
+[0.721s] -- Found geometry_msgs: 4.9.0 (/opt/ros/humble/share/geometry_msgs/cmake)
+[0.752s] -- Found px4_msgs: 2.0.1 (/home/parallels/drone_local/drone_ws/install/px4_msgs/share/px4_msgs/cmake)
+[0.765s] -- Found rclcpp: 16.0.17 (/opt/ros/humble/share/rclcpp/cmake)
+[0.813s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.816s] -- Found rmw_fastrtps_cpp: 6.2.9 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.896s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[0.920s] -- Found FastRTPS: /opt/ros/humble/include  
+[0.955s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.968s] -- Looking for pthread.h
+[1.015s] -- Looking for pthread.h - found
+[1.015s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.070s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[1.071s] -- Found Threads: TRUE  
+[1.117s] -- Found sensor_msgs: 4.9.0 (/opt/ros/humble/share/sensor_msgs/cmake)
+[1.136s] -- Found rclpy: 3.3.19 (/opt/ros/humble/share/rclpy/cmake)
+[1.146s] -- Found ament_lint_auto: 0.12.14 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[1.225s] -- Added test 'copyright' to check source files copyright and LICENSE
+[1.229s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[1.230s] -- Configured cppcheck include dirs: /home/parallels/drone_local/drone_ws/src/px4_ros_com/include;$<BUILD_INTERFACE:/home/parallels/drone_local/drone_ws/src/px4_ros_com/include/px4_ros_com>
+[1.230s] -- Configured cppcheck exclude dirs and/or files: 
+[1.233s] -- Added test 'cpplint' to check C / C++ code against the Google style
+[1.233s] -- Configured cpplint exclude dirs and/or files: 
+[1.234s] -- Added test 'flake8' to check Python code syntax and style conventions
+[1.235s] -- Added test 'lint_cmake' to check CMake code style
+[1.237s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[1.238s] -- Added test 'uncrustify' to check C / C++ code style
+[1.238s] -- Configured uncrustify additional arguments: 
+[1.239s] -- Added test 'xmllint' to check XML markup files
+[1.243s] -- Configuring done
+[1.264s] -- Generating done
+[1.268s] -- Build files have been written to: /home/parallels/drone_local/drone_ws/build/px4_ros_com
+[1.274s] Invoked command in '/home/parallels/drone_local/drone_ws/build/px4_ros_com' returned '0': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint:/home/parallels/drone_local/drone_ws/install/offboard_test:/opt/ros/humble LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib /usr/bin/cmake /home/parallels/drone_local/drone_ws/src/px4_ros_com -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/parallels/drone_local/drone_ws/install/px4_ros_com
+[1.276s] Invoking command in '/home/parallels/drone_local/drone_ws/build/px4_ros_com': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint:/home/parallels/drone_local/drone_ws/install/offboard_test:/opt/ros/humble LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib /usr/bin/cmake --build /home/parallels/drone_local/drone_ws/build/px4_ros_com -- -j4 -l4
+[1.309s] [  8%] [32mBuilding CXX object CMakeFiles/frame_transforms.dir/src/lib/frame_transforms.cpp.o[0m
+[1.311s] [ 16%] [32mBuilding CXX object CMakeFiles/sensor_combined_listener.dir/src/examples/listeners/sensor_combined_listener.cpp.o[0m
+[1.311s] [ 25%] [32mBuilding CXX object CMakeFiles/vehicle_gps_position_listener.dir/src/examples/listeners/vehicle_gps_position_listener.cpp.o[0m
+[1.314s] [ 33%] [32mBuilding CXX object CMakeFiles/debug_vect_advertiser.dir/src/examples/advertisers/debug_vect_advertiser.cpp.o[0m
+[2.259s] In file included from [01m[K/usr/include/eigen3/Eigen/Core:214[m[K,
+[2.259s]                  from [01m[K/usr/include/eigen3/Eigen/Dense:1[m[K,
+[2.259s]                  from [01m[K/usr/include/eigen3/Eigen/Eigen:1[m[K,
+[2.259s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/include/px4_ros_com/frame_transforms.h:45[m[K,
+[2.259s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/src/lib/frame_transforms.cpp:41[m[K:
+[2.259s] [01m[K/usr/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:[m[K In function ‘[01m[KPacket Eigen::internal::pload(const typename Eigen::internal::unpacket_traits<T>::type*) [with Packet = Eigen::internal::eigen_packet_wrapper<int, 2>; typename Eigen::internal::unpacket_traits<T>::type = signed char][m[K’:
+[2.259s] [01m[K/usr/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9:[m[K [01;35m[Kwarning: [m[K‘[01m[Kvoid* memcpy(void*, const void*, size_t)[m[K’ copying an object of non-trivial type ‘[01m[KEigen::internal::Packet4c[m[K’ {aka ‘[01m[Kstruct Eigen::internal::eigen_packet_wrapper<int, 2>[m[K’} from an array of ‘[01m[Kconst int8_t[m[K’ {aka ‘[01m[Kconst signed char[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wclass-memaccess-Wclass-memaccess]8;;[m[K]
+[2.259s]  1671 |   [01;35m[Kmemcpy(&res, from, sizeof(Packet4c))[m[K;
+[2.260s]       |   [01;35m[K~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[2.260s] In file included from [01m[K/usr/include/eigen3/Eigen/Core:172[m[K,
+[2.260s]                  from [01m[K/usr/include/eigen3/Eigen/Dense:1[m[K,
+[2.260s]                  from [01m[K/usr/include/eigen3/Eigen/Eigen:1[m[K,
+[2.260s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/include/px4_ros_com/frame_transforms.h:45[m[K,
+[2.260s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/src/lib/frame_transforms.cpp:41[m[K:
+[2.260s] [01m[K/usr/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8:[m[K [01;36m[Knote: [m[K‘[01m[KEigen::internal::Packet4c[m[K’ {aka ‘[01m[Kstruct Eigen::internal::eigen_packet_wrapper<int, 2>[m[K’} declared here
+[2.260s]   159 | struct [01;36m[Keigen_packet_wrapper[m[K
+[2.260s]       |        [01;36m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[2.262s] In file included from [01m[K/usr/include/eigen3/Eigen/Core:214[m[K,
+[2.262s]                  from [01m[K/usr/include/eigen3/Eigen/Dense:1[m[K,
+[2.262s]                  from [01m[K/usr/include/eigen3/Eigen/Eigen:1[m[K,
+[2.262s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/include/px4_ros_com/frame_transforms.h:45[m[K,
+[2.262s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/src/lib/frame_transforms.cpp:41[m[K:
+[2.262s] [01m[K/usr/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:[m[K In function ‘[01m[KPacket Eigen::internal::ploadu(const typename Eigen::internal::unpacket_traits<T>::type*) [with Packet = Eigen::internal::eigen_packet_wrapper<int, 2>; typename Eigen::internal::unpacket_traits<T>::type = signed char][m[K’:
+[2.262s] [01m[K/usr/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9:[m[K [01;35m[Kwarning: [m[K‘[01m[Kvoid* memcpy(void*, const void*, size_t)[m[K’ copying an object of non-trivial type ‘[01m[KEigen::internal::Packet4c[m[K’ {aka ‘[01m[Kstruct Eigen::internal::eigen_packet_wrapper<int, 2>[m[K’} from an array of ‘[01m[Kconst int8_t[m[K’ {aka ‘[01m[Kconst signed char[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wclass-memaccess-Wclass-memaccess]8;;[m[K]
+[2.262s]  1716 |   [01;35m[Kmemcpy(&res, from, sizeof(Packet4c))[m[K;
+[2.262s]       |   [01;35m[K~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[2.262s] In file included from [01m[K/usr/include/eigen3/Eigen/Core:172[m[K,
+[2.262s]                  from [01m[K/usr/include/eigen3/Eigen/Dense:1[m[K,
+[2.262s]                  from [01m[K/usr/include/eigen3/Eigen/Eigen:1[m[K,
+[2.262s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/include/px4_ros_com/frame_transforms.h:45[m[K,
+[2.262s]                  from [01m[K/home/parallels/drone_local/drone_ws/src/px4_ros_com/src/lib/frame_transforms.cpp:41[m[K:
+[2.262s] [01m[K/usr/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8:[m[K [01;36m[Knote: [m[K‘[01m[KEigen::internal::Packet4c[m[K’ {aka ‘[01m[Kstruct Eigen::internal::eigen_packet_wrapper<int, 2>[m[K’} declared here
+[2.262s]   159 | struct [01;36m[Keigen_packet_wrapper[m[K
+[2.262s]       |        [01;36m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[6.091s] [ 41%] [32m[1mLinking CXX executable debug_vect_advertiser[0m
+[6.301s] [ 41%] Built target debug_vect_advertiser
+[6.389s] [ 50%] [32mBuilding CXX object CMakeFiles/offboard_control.dir/src/examples/offboard/offboard_control.cpp.o[0m
+[9.761s] [ 58%] [32m[1mLinking CXX shared library libframe_transforms.so[0m
+[10.054s] [ 58%] Built target frame_transforms
+[10.116s] [ 66%] [32mBuilding CXX object CMakeFiles/offboard_control_srv.dir/src/examples/offboard/offboard_control_srv.cpp.o[0m
+[10.133s] [ 75%] [32m[1mLinking CXX executable sensor_combined_listener[0m
+[10.334s] [ 83%] [32m[1mLinking CXX executable vehicle_gps_position_listener[0m
+[10.728s] [ 83%] Built target sensor_combined_listener
+[10.754s] [ 83%] Built target ament_cmake_python_symlink_px4_ros_com
+[10.960s] [ 83%] Built target vehicle_gps_position_listener
+[11.017s] running egg_info
+[11.017s] creating px4_ros_com.egg-info
+[11.017s] writing px4_ros_com.egg-info/PKG-INFO
+[11.017s] writing dependency_links to px4_ros_com.egg-info/dependency_links.txt
+[11.017s] writing top-level names to px4_ros_com.egg-info/top_level.txt
+[11.017s] writing manifest file 'px4_ros_com.egg-info/SOURCES.txt'
+[11.018s] reading manifest file 'px4_ros_com.egg-info/SOURCES.txt'
+[11.019s] writing manifest file 'px4_ros_com.egg-info/SOURCES.txt'
+[11.045s] [ 83%] Built target ament_cmake_python_build_px4_ros_com_egg
+[11.385s] [ 91%] [32m[1mLinking CXX executable offboard_control[0m
+[11.559s] [ 91%] Built target offboard_control
+[14.187s] [100%] [32m[1mLinking CXX executable offboard_control_srv[0m
+[14.356s] [100%] Built target offboard_control_srv
+[14.366s] Invoked command in '/home/parallels/drone_local/drone_ws/build/px4_ros_com' returned '0': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint:/home/parallels/drone_local/drone_ws/install/offboard_test:/opt/ros/humble LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib /usr/bin/cmake --build /home/parallels/drone_local/drone_ws/build/px4_ros_com -- -j4 -l4
+[14.367s] Invoking command in '/home/parallels/drone_local/drone_ws/build/px4_ros_com': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint:/home/parallels/drone_local/drone_ws/install/offboard_test:/opt/ros/humble LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib /usr/bin/cmake --install /home/parallels/drone_local/drone_ws/build/px4_ros_com
+[14.371s] -- Install configuration: ""
+[14.371s] -- Execute custom install script
+[14.372s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/px4_ros_com/sensor_combined_listener
+[14.377s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/px4_ros_com/vehicle_gps_position_listener
+[14.382s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/px4_ros_com/debug_vect_advertiser
+[14.387s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/px4_ros_com/offboard_control
+[14.394s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/px4_ros_com/offboard_control_srv
+[14.399s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/library_path.sh
+[14.405s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/library_path.dsv
+[14.411s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/include/px4_ros_com/frame_transforms.h
+[14.416s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com//launch/offboard_control_launch.yaml
+[14.422s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com//launch/sensor_combined_listener.launch.py
+[14.427s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com//test/__init__.py
+[14.432s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com//test/pipeline_io_test.py
+[14.437s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com//test/test_input.py
+[14.444s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com//test/test_output.py
+[14.448s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/pythonpath.sh
+[14.453s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/pythonpath.dsv
+[14.459s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com-0.1.0-py3.10.egg-info/PKG-INFO
+[14.463s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com-0.1.0-py3.10.egg-info/SOURCES.txt
+[14.469s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com-0.1.0-py3.10.egg-info/dependency_links.txt
+[14.473s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com-0.1.0-py3.10.egg-info/top_level.txt
+[14.479s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com/__init__.py
+[14.484s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com/module_to_import.py
+[14.489s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/px4_ros_com/offboard_control.py
+[14.495s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/ament_index/resource_index/package_run_dependencies/px4_ros_com
+[14.500s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/ament_index/resource_index/parent_prefix_path/px4_ros_com
+[14.507s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/ament_prefix_path.sh
+[14.511s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/ament_prefix_path.dsv
+[14.516s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/path.sh
+[14.521s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/environment/path.dsv
+[14.526s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/local_setup.bash
+[14.531s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/local_setup.sh
+[14.536s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/local_setup.zsh
+[14.541s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/local_setup.dsv
+[14.547s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/package.dsv
+[14.552s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/ament_index/resource_index/packages/px4_ros_com
+[14.558s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/ament_cmake_export_dependencies-extras.cmake
+[14.563s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/ament_cmake_export_targets-extras.cmake
+[14.569s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/ament_cmake_export_include_directories-extras.cmake
+[14.574s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/ament_cmake_export_libraries-extras.cmake
+[14.580s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/px4_ros_comConfig.cmake
+[14.585s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/px4_ros_comConfig-version.cmake
+[14.590s] -- Symlinking: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/package.xml
+[14.595s] -- Installing: /home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/libframe_transforms.so
+[14.597s] -- Set runtime path of "/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/libframe_transforms.so" to ""
+[14.618s] Listing '/home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com'...
+[14.618s] Compiling '/home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com/__init__.py'...
+[14.618s] Compiling '/home/parallels/drone_local/drone_ws/install/px4_ros_com/local/lib/python3.10/dist-packages/px4_ros_com/module_to_import.py'...
+[14.621s] -- Installing: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/export_frame_transformsExport.cmake
+[14.621s] -- Installing: /home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/export_frame_transformsExport-noconfig.cmake
+[14.623s] Invoked command in '/home/parallels/drone_local/drone_ws/build/px4_ros_com' returned '0': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint:/home/parallels/drone_local/drone_ws/install/offboard_test:/opt/ros/humble LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib /usr/bin/cmake --install /home/parallels/drone_local/drone_ws/build/px4_ros_com

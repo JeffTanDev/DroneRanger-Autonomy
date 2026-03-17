@@ -1,0 +1,1 @@
+/home/parallels/drone_local/drone_ws/src/px4_msgs/msg/TransponderReport.msg

@@ -1,0 +1,28 @@
+[0.761s] Invoking command in '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build --no-deps symlink_data
+[0.959s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[0.959s]   warnings.warn(
+[1.005s] running develop
+[1.203s] running egg_info
+[1.203s] creating ros_tcp_endpoint.egg-info
+[1.204s] writing ros_tcp_endpoint.egg-info/PKG-INFO
+[1.204s] writing dependency_links to ros_tcp_endpoint.egg-info/dependency_links.txt
+[1.204s] writing entry points to ros_tcp_endpoint.egg-info/entry_points.txt
+[1.204s] writing requirements to ros_tcp_endpoint.egg-info/requires.txt
+[1.204s] writing top-level names to ros_tcp_endpoint.egg-info/top_level.txt
+[1.204s] writing manifest file 'ros_tcp_endpoint.egg-info/SOURCES.txt'
+[1.205s] reading manifest file 'ros_tcp_endpoint.egg-info/SOURCES.txt'
+[1.205s] writing manifest file 'ros_tcp_endpoint.egg-info/SOURCES.txt'
+[1.206s] running build_ext
+[1.206s] Creating /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros-tcp-endpoint.egg-link (link to .)
+[1.207s] Installing default_server_endpoint script to /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/ros_tcp_endpoint
+[1.210s] 
+[1.210s] Installed /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint
+[1.210s] running symlink_data
+[1.210s] creating /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ament_index
+[1.210s] creating /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ament_index/resource_index
+[1.210s] creating /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ament_index/resource_index/packages
+[1.210s] symbolically linking /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/resource/ros_tcp_endpoint -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ament_index/resource_index/packages
+[1.210s] symbolically linking /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/package.xml -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ros_tcp_endpoint
+[1.210s] creating /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ros_tcp_endpoint/launch
+[1.210s] symbolically linking /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/launch/endpoint.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/share/ros_tcp_endpoint/launch
+[1.250s] Invoked command in '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint' returned '0': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build --no-deps symlink_data

@@ -1,0 +1,35 @@
+running egg_info
+writing ../../build/offboard_test/offboard_test.egg-info/PKG-INFO
+writing dependency_links to ../../build/offboard_test/offboard_test.egg-info/dependency_links.txt
+writing entry points to ../../build/offboard_test/offboard_test.egg-info/entry_points.txt
+writing requirements to ../../build/offboard_test/offboard_test.egg-info/requires.txt
+writing top-level names to ../../build/offboard_test/offboard_test.egg-info/top_level.txt
+reading manifest file '../../build/offboard_test/offboard_test.egg-info/SOURCES.txt'
+writing manifest file '../../build/offboard_test/offboard_test.egg-info/SOURCES.txt'
+running build
+running build_py
+copying offboard_test/offboard_cesium_origin_takeoff_land.py -> /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test
+copying offboard_test/odom_monitor.py -> /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test
+copying offboard_test/offboard_orbit_mission.py -> /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test
+running install
+running install_lib
+copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/offboard_cesium_origin_takeoff_land.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/odom_monitor.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+copying /home/parallels/drone_local/drone_ws/build/offboard_test/build/lib/offboard_test/offboard_orbit_mission.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test
+byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/offboard_cesium_origin_takeoff_land.py to offboard_cesium_origin_takeoff_land.cpython-310.pyc
+byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/odom_monitor.py to odom_monitor.cpython-310.pyc
+byte-compiling /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test/offboard_orbit_mission.py to offboard_orbit_mission.cpython-310.pyc
+running install_data
+copying launch/cesium_origin_takeoff_with_monitor.launch.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/offboard_test/launch
+running install_egg_info
+removing '/home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/offboard_test/offboard_test.egg-info to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard_test-0.0.0-py3.10.egg-info
+running install_scripts
+Installing obstacle_avoidance_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing obstacle_publisher script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing odom_monitor script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing offboard_cesium_origin_takeoff_land script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing offboard_orbit_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing offboard_square_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing offboard_takeoff script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+writing list of installed files to '/home/parallels/drone_local/drone_ws/build/offboard_test/install.log'

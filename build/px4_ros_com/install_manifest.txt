@@ -1,0 +1,3 @@
+/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib/libframe_transforms.so
+/home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/export_frame_transformsExport.cmake
+/home/parallels/drone_local/drone_ws/install/px4_ros_com/share/px4_ros_com/cmake/export_frame_transformsExport-noconfig.cmake

@@ -1,0 +1,30 @@
+[0.758s] Invoking command in '/home/parallels/drone_local/drone_ws/build/drone_autonomy': AMENT_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/drone_local/drone_ws/build/drone_autonomy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages:/home/parallels/drone_local/drone_ws/install/px4_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/drone_autonomy/build --no-deps symlink_data
+[0.962s] running develop
+[1.057s] running egg_info
+[1.057s] writing drone_autonomy.egg-info/PKG-INFO
+[1.057s] writing dependency_links to drone_autonomy.egg-info/dependency_links.txt
+[1.057s] writing entry points to drone_autonomy.egg-info/entry_points.txt
+[1.057s] writing requirements to drone_autonomy.egg-info/requires.txt
+[1.057s] writing top-level names to drone_autonomy.egg-info/top_level.txt
+[1.058s] reading manifest file 'drone_autonomy.egg-info/SOURCES.txt'
+[1.058s] writing manifest file 'drone_autonomy.egg-info/SOURCES.txt'
+[1.059s] running build_ext
+[1.059s] Creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone-autonomy.egg-link (link to .)
+[1.061s] Installing circle_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing data_recorder script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing drone_controller script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing figure_eight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing forward_mission script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing house_inspection script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing mission_executor script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing obstacle_detector script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing orbit_point script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing pursuit_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing rrt_pursuit_single script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing simple_takeoff script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing square_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.061s] Installing waypoint_mission script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.062s] 
+[1.062s] Installed /home/parallels/drone_local/drone_ws/build/drone_autonomy
+[1.062s] running symlink_data
+[1.079s] Invoked command in '/home/parallels/drone_local/drone_ws/build/drone_autonomy' returned '0': AMENT_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/drone_local/drone_ws/build/drone_autonomy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages:/home/parallels/drone_local/drone_ws/install/px4_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/drone_autonomy/build --no-deps symlink_data

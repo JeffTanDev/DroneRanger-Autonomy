@@ -1,0 +1,47 @@
+[0.000000] (-) TimerEvent: {}
+[0.000609] (-) JobUnselected: {'identifier': 'drone_autonomy'}
+[0.000642] (-) JobUnselected: {'identifier': 'offboard_avoidance_unity'}
+[0.000653] (-) JobUnselected: {'identifier': 'offboard_test'}
+[0.000661] (-) JobUnselected: {'identifier': 'px4_msgs'}
+[0.000669] (-) JobUnselected: {'identifier': 'px4_ros_com'}
+[0.000722] (-) JobUnselected: {'identifier': 'tracking'}
+[0.000754] (ros_tcp_endpoint) JobQueued: {'identifier': 'ros_tcp_endpoint', 'dependencies': OrderedDict()}
+[0.000768] (ros_tcp_endpoint) JobStarted: {'identifier': 'ros_tcp_endpoint'}
+[0.098866] (-) TimerEvent: {}
+[0.199066] (-) TimerEvent: {}
+[0.299842] (-) TimerEvent: {}
+[0.400512] (-) TimerEvent: {}
+[0.501173] (-) TimerEvent: {}
+[0.601530] (-) TimerEvent: {}
+[0.674417] (ros_tcp_endpoint) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/ros_tcp_endpoint', 'build', '--build-base', '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build', 'install', '--record', '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/install.log', '--install-scripts', '$base/lib/ros_tcp_endpoint', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/parallels/drone_local/drone_ws/src/ROS-TCP-Endpoint', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'VSCODE_CWD': '/home/parallels', 'VSCODE_ESM_ENTRYPOINT': 'vs/workbench/api/node/extensionHostProcess', 'USER': 'parallels', 'SSH_CLIENT': '10.211.55.2 56578 22', 'VSCODE_NLS_CONFIG': '{"userLocale":"en","osLocale":"en","resolvedLanguage":"en","defaultMessagesFile":"/home/parallels/.cursor-server/bin/linux-arm64/224838f96445be37e3db643a163a817c15b36060/out/nls.messages.json","locale":"en","availableLanguages":{}}', 'CI': '1', 'VSCODE_HANDLES_UNCAUGHT_ERRORS': 'true', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'BROWSER': '/home/parallels/.cursor-server/bin/linux-arm64/224838f96445be37e3db643a163a817c15b36060/bin/helpers/browser.sh', 'MOTD_SHOWN': 'pam', 'HOME': '/home/parallels', 'OLDPWD': '/home/parallels/drone_local/scripts', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-0583b560-a39d-43cd-ada1-75c4c9e20fcc.sock', 'ROS_PYTHON_VERSION': '3', 'NO_COLOR': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'VSCODE_L10N_BUNDLE_LOCATION': '', 'ROS_DISTRO': 'humble', 'OVSX_REGISTRY_URL': 'https://open-vsx.org', 'LOGNAME': 'parallels', 'FORCE_COLOR': '0', 'VSCODE_HANDLES_SIGPIPE': 'true', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'dumb', 'XDG_SESSION_ID': '193', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/home/parallels/.local/bin:/home/parallels/.cursor-server/bin/linux-arm64/224838f96445be37e3db643a163a817c15b36060/bin/remote-cli:/home/parallels/.local/bin:/opt/ros/humble/bin:/home/parallels/.cursor-server/bin/linux-arm64/224838f96445be37e3db643a163a817c15b36060/bin/remote-cli:/home/parallels/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'VSCODE_AGENT_FOLDER': '/home/parallels/.cursor-server', 'XDG_RUNTIME_DIR': '/run/user/1000', 'CURSOR_AGENT': '1', 'LANG': 'C.UTF-8', 'LS_COLORS': '', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'SHELL': '/bin/bash', 'VSCODE_SERVER_SHUTDOWN_TIMEOUT': '300', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'PWD': '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint', 'SSH_CONNECTION': '10.211.55.2 56578 10.211.55.3 22', 'XDG_DATA_DIRS': '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', '_ZO_DOCTOR': '0'}, 'shell': False}
+[0.701976] (-) TimerEvent: {}
+[0.802390] (-) TimerEvent: {}
+[0.826626] (ros_tcp_endpoint) StderrLine: {'line': b"/usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead\n"}
+[0.826786] (ros_tcp_endpoint) StderrLine: {'line': b'  warnings.warn(\n'}
+[0.832826] (ros_tcp_endpoint) StdoutLine: {'line': b'running egg_info\n'}
+[0.833642] (ros_tcp_endpoint) StdoutLine: {'line': b'writing ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/PKG-INFO\n'}
+[0.833992] (ros_tcp_endpoint) StdoutLine: {'line': b'writing dependency_links to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/dependency_links.txt\n'}
+[0.834073] (ros_tcp_endpoint) StdoutLine: {'line': b'writing entry points to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/entry_points.txt\n'}
+[0.834109] (ros_tcp_endpoint) StdoutLine: {'line': b'writing requirements to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/requires.txt\n'}
+[0.834172] (ros_tcp_endpoint) StdoutLine: {'line': b'writing top-level names to ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/top_level.txt\n'}
+[0.835500] (ros_tcp_endpoint) StdoutLine: {'line': b"reading manifest file '../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/SOURCES.txt'\n"}
+[0.835629] (ros_tcp_endpoint) StdoutLine: {'line': b"adding license file 'LICENSE'\n"}
+[0.836669] (ros_tcp_endpoint) StdoutLine: {'line': b"writing manifest file '../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/SOURCES.txt'\n"}
+[0.836787] (ros_tcp_endpoint) StdoutLine: {'line': b'running build\n'}
+[0.836821] (ros_tcp_endpoint) StdoutLine: {'line': b'running build_py\n'}
+[0.836850] (ros_tcp_endpoint) StdoutLine: {'line': b'copying ros_tcp_endpoint/server.py -> /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint\n'}
+[0.837209] (ros_tcp_endpoint) StdoutLine: {'line': b'running install\n'}
+[0.837526] (ros_tcp_endpoint) StdoutLine: {'line': b'running install_lib\n'}
+[0.838120] (ros_tcp_endpoint) StdoutLine: {'line': b'copying /home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/server.py -> /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint\n'}
+[0.839550] (ros_tcp_endpoint) StdoutLine: {'line': b'byte-compiling /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/server.py to server.cpython-310.pyc\n'}
+[0.840803] (ros_tcp_endpoint) StdoutLine: {'line': b'running install_data\n'}
+[0.840879] (ros_tcp_endpoint) StdoutLine: {'line': b'running install_egg_info\n'}
+[0.842754] (ros_tcp_endpoint) StdoutLine: {'line': b"removing '/home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint-0.0.1-py3.10.egg-info' (and everything under it)\n"}
+[0.843451] (ros_tcp_endpoint) StdoutLine: {'line': b'Copying ../../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info to /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint-0.0.1-py3.10.egg-info\n'}
+[0.843866] (ros_tcp_endpoint) StdoutLine: {'line': b'running install_scripts\n'}
+[0.857955] (ros_tcp_endpoint) StdoutLine: {'line': b'Installing default_server_endpoint script to /home/parallels/drone_local/drone_ws/install/ros_tcp_endpoint/lib/ros_tcp_endpoint\n'}
+[0.858483] (ros_tcp_endpoint) StdoutLine: {'line': b"writing list of installed files to '/home/parallels/drone_local/drone_ws/build/ros_tcp_endpoint/install.log'\n"}
+[0.883654] (ros_tcp_endpoint) CommandEnded: {'returncode': 0}
+[0.906651] (-) TimerEvent: {}
+[0.928441] (ros_tcp_endpoint) JobEnded: {'identifier': 'ros_tcp_endpoint', 'rc': 0}
+[0.937848] (-) EventReactorShutdown: {}

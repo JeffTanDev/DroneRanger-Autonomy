@@ -1,0 +1,24 @@
+[0.735s] Invoking command in '/home/parallels/drone_local/drone_ws/build/tracking': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/tracking/build --no-deps symlink_data
+[0.984s] running develop
+[1.107s] running egg_info
+[1.107s] creating tracking.egg-info
+[1.107s] writing tracking.egg-info/PKG-INFO
+[1.108s] writing dependency_links to tracking.egg-info/dependency_links.txt
+[1.108s] writing entry points to tracking.egg-info/entry_points.txt
+[1.108s] writing requirements to tracking.egg-info/requires.txt
+[1.108s] writing top-level names to tracking.egg-info/top_level.txt
+[1.110s] writing manifest file 'tracking.egg-info/SOURCES.txt'
+[1.110s] reading manifest file 'tracking.egg-info/SOURCES.txt'
+[1.111s] writing manifest file 'tracking.egg-info/SOURCES.txt'
+[1.113s] running build_ext
+[1.113s] Creating /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking.egg-link (link to .)
+[1.117s] Installing tracker script to /home/parallels/drone_local/drone_ws/install/tracking/lib/tracking
+[1.118s] 
+[1.118s] Installed /home/parallels/drone_local/drone_ws/build/tracking
+[1.118s] running symlink_data
+[1.118s] creating /home/parallels/drone_local/drone_ws/install/tracking/share/ament_index
+[1.118s] creating /home/parallels/drone_local/drone_ws/install/tracking/share/ament_index/resource_index
+[1.118s] creating /home/parallels/drone_local/drone_ws/install/tracking/share/ament_index/resource_index/packages
+[1.118s] symbolically linking /home/parallels/drone_local/drone_ws/build/tracking/resource/tracking -> /home/parallels/drone_local/drone_ws/install/tracking/share/ament_index/resource_index/packages
+[1.118s] symbolically linking /home/parallels/drone_local/drone_ws/build/tracking/package.xml -> /home/parallels/drone_local/drone_ws/install/tracking/share/tracking
+[1.191s] Invoked command in '/home/parallels/drone_local/drone_ws/build/tracking' returned '0': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/tracking/build --no-deps symlink_data

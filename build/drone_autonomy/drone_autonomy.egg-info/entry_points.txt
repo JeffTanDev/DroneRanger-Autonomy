@@ -1,0 +1,16 @@
+[console_scripts]
+circle_flight = drone_autonomy.missions.circle_flight:main
+data_recorder = drone_autonomy.utils.data_recorder:main
+drone_controller = drone_autonomy.core.drone_controller:main
+figure_eight = drone_autonomy.missions.figure_eight:main
+forward_mission = drone_autonomy.missions.forward_mission:main
+house_inspection = drone_autonomy.missions.house_inspection:main
+mission_executor = drone_autonomy.core.mission_executor:main
+obstacle_detector = drone_autonomy.perception.obstacle_detector:main
+orbit_point = drone_autonomy.missions.orbit_point:main
+pursuit_flight = drone_autonomy.missions.pursuit_flight:main
+rrt_pursuit_single = drone_autonomy.missions.rrt_pursuit_single:main
+simple_takeoff = drone_autonomy.missions.simple_takeoff:main
+square_flight = drone_autonomy.missions.square_flight:main
+waypoint_mission = drone_autonomy.missions.waypoint_mission:main
+

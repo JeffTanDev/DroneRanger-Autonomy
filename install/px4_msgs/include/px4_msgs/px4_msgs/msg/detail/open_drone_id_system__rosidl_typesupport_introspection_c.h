@@ -1,0 +1,1 @@
+/home/parallels/drone_local/drone_ws/build/px4_msgs/rosidl_typesupport_introspection_c/px4_msgs/msg/detail/open_drone_id_system__rosidl_typesupport_introspection_c.h

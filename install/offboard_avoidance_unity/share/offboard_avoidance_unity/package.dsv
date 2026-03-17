@@ -1,0 +1,9 @@
+source;share/offboard_avoidance_unity/hook/pythonpath.ps1
+source;share/offboard_avoidance_unity/hook/pythonpath.dsv
+source;share/offboard_avoidance_unity/hook/pythonpath.sh
+source;share/offboard_avoidance_unity/hook/ament_prefix_path.ps1
+source;share/offboard_avoidance_unity/hook/ament_prefix_path.dsv
+source;share/offboard_avoidance_unity/hook/ament_prefix_path.sh
+source;../../build/offboard_avoidance_unity/share/offboard_avoidance_unity/hook/pythonpath_develop.ps1
+source;../../build/offboard_avoidance_unity/share/offboard_avoidance_unity/hook/pythonpath_develop.dsv
+source;../../build/offboard_avoidance_unity/share/offboard_avoidance_unity/hook/pythonpath_develop.sh

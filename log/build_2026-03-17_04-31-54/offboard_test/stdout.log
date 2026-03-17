@@ -1,0 +1,23 @@
+running develop
+running egg_info
+writing offboard_test.egg-info/PKG-INFO
+writing dependency_links to offboard_test.egg-info/dependency_links.txt
+writing entry points to offboard_test.egg-info/entry_points.txt
+writing requirements to offboard_test.egg-info/requires.txt
+writing top-level names to offboard_test.egg-info/top_level.txt
+reading manifest file 'offboard_test.egg-info/SOURCES.txt'
+writing manifest file 'offboard_test.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard-test.egg-link (link to .)
+Installing obstacle_avoidance_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing obstacle_publisher script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing offboard_orbit_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing offboard_square_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+Installing offboard_takeoff script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+
+Installed /home/parallels/drone_local/drone_ws/build/offboard_test
+running symlink_data
+symbolically linking /home/parallels/drone_local/drone_ws/build/offboard_test/resource/offboard_test -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/ament_index/resource_index/packages
+symbolically linking /home/parallels/drone_local/drone_ws/build/offboard_test/package.xml -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/offboard_test
+symbolically linking /home/parallels/drone_local/drone_ws/build/offboard_test/launch/obstacle_mission.launch.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/offboard_test/launch
+symbolically linking /home/parallels/drone_local/drone_ws/build/offboard_test/launch/around_house_mission.launch.py -> /home/parallels/drone_local/drone_ws/install/offboard_test/share/offboard_test/launch

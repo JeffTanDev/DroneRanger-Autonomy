@@ -1,0 +1,17 @@
+[0.734s] Invoking command in '/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity': AMENT_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/python3.10/site-packages:/home/parallels/drone_local/drone_ws/install/px4_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/build --no-deps symlink_data
+[0.902s] running develop
+[0.988s] running egg_info
+[0.988s] writing offboard_avoidance_unity.egg-info/PKG-INFO
+[0.988s] writing dependency_links to offboard_avoidance_unity.egg-info/dependency_links.txt
+[0.989s] writing entry points to offboard_avoidance_unity.egg-info/entry_points.txt
+[0.989s] writing requirements to offboard_avoidance_unity.egg-info/requires.txt
+[0.989s] writing top-level names to offboard_avoidance_unity.egg-info/top_level.txt
+[0.990s] reading manifest file 'offboard_avoidance_unity.egg-info/SOURCES.txt'
+[0.990s] writing manifest file 'offboard_avoidance_unity.egg-info/SOURCES.txt'
+[0.990s] running build_ext
+[0.991s] Creating /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/python3.10/site-packages/offboard-avoidance-unity.egg-link (link to .)
+[0.991s] Installing unity_house_avoidance script to /home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/offboard_avoidance_unity
+[0.992s] 
+[0.992s] Installed /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity
+[0.992s] running symlink_data
+[1.018s] Invoked command in '/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity' returned '0': AMENT_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_avoidance_unity/lib/python3.10/site-packages:/home/parallels/drone_local/drone_ws/install/px4_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_avoidance_unity/build --no-deps symlink_data

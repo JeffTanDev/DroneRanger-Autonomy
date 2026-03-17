@@ -1,0 +1,105 @@
+[0.847s] Invoking command in '/home/parallels/drone_local/drone_ws/src/drone_autonomy': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/drone_autonomy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/drone_autonomy build --build-base /home/parallels/drone_local/drone_ws/build/drone_autonomy/build install --record /home/parallels/drone_local/drone_ws/build/drone_autonomy/install.log --single-version-externally-managed install_data
+[1.025s] running egg_info
+[1.026s] creating ../../build/drone_autonomy/drone_autonomy.egg-info
+[1.026s] writing ../../build/drone_autonomy/drone_autonomy.egg-info/PKG-INFO
+[1.026s] writing dependency_links to ../../build/drone_autonomy/drone_autonomy.egg-info/dependency_links.txt
+[1.026s] writing entry points to ../../build/drone_autonomy/drone_autonomy.egg-info/entry_points.txt
+[1.026s] writing requirements to ../../build/drone_autonomy/drone_autonomy.egg-info/requires.txt
+[1.026s] writing top-level names to ../../build/drone_autonomy/drone_autonomy.egg-info/top_level.txt
+[1.026s] writing manifest file '../../build/drone_autonomy/drone_autonomy.egg-info/SOURCES.txt'
+[1.027s] reading manifest file '../../build/drone_autonomy/drone_autonomy.egg-info/SOURCES.txt'
+[1.028s] writing manifest file '../../build/drone_autonomy/drone_autonomy.egg-info/SOURCES.txt'
+[1.028s] running build
+[1.028s] running build_py
+[1.029s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build
+[1.029s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib
+[1.029s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy
+[1.029s] copying drone_autonomy/__init__.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy
+[1.029s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/perception
+[1.029s] copying drone_autonomy/perception/__init__.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/perception
+[1.030s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/control
+[1.030s] copying drone_autonomy/control/__init__.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/control
+[1.030s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/rrt_pursuit_single.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/figure_eight.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/circle_flight.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/simple_takeoff.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/orbit_point.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/__init__.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/square_flight.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] copying drone_autonomy/missions/pursuit_flight.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions
+[1.030s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/planning
+[1.030s] copying drone_autonomy/planning/__init__.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/planning
+[1.030s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/core
+[1.030s] copying drone_autonomy/core/drone_controller.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/core
+[1.030s] copying drone_autonomy/core/coordinate_transforms.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/core
+[1.031s] copying drone_autonomy/core/__init__.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/core
+[1.031s] creating /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/utils
+[1.031s] copying drone_autonomy/utils/__init__.py -> /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/utils
+[1.031s] running install
+[1.031s] running install_lib
+[1.032s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy
+[1.033s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/perception
+[1.033s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/perception/__init__.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/perception
+[1.033s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/control
+[1.033s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/control/__init__.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/control
+[1.033s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.033s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/rrt_pursuit_single.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.033s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/figure_eight.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.033s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/circle_flight.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/simple_takeoff.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/orbit_point.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/__init__.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/square_flight.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/missions/pursuit_flight.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions
+[1.034s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/planning
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/planning/__init__.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/planning
+[1.034s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/core
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/core/drone_controller.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/core
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/core/coordinate_transforms.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/core
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/core/__init__.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/core
+[1.034s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/__init__.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy
+[1.035s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/utils
+[1.035s] copying /home/parallels/drone_local/drone_ws/build/drone_autonomy/build/lib/drone_autonomy/utils/__init__.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/utils
+[1.035s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/perception/__init__.py to __init__.cpython-310.pyc
+[1.035s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/control/__init__.py to __init__.cpython-310.pyc
+[1.035s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/rrt_pursuit_single.py to rrt_pursuit_single.cpython-310.pyc
+[1.038s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/figure_eight.py to figure_eight.cpython-310.pyc
+[1.039s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/circle_flight.py to circle_flight.cpython-310.pyc
+[1.040s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/simple_takeoff.py to simple_takeoff.cpython-310.pyc
+[1.040s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/orbit_point.py to orbit_point.cpython-310.pyc
+[1.041s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/__init__.py to __init__.cpython-310.pyc
+[1.041s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/square_flight.py to square_flight.cpython-310.pyc
+[1.042s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/missions/pursuit_flight.py to pursuit_flight.cpython-310.pyc
+[1.043s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/planning/__init__.py to __init__.cpython-310.pyc
+[1.043s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/core/drone_controller.py to drone_controller.cpython-310.pyc
+[1.044s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/core/coordinate_transforms.py to coordinate_transforms.cpython-310.pyc
+[1.044s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/core/__init__.py to __init__.cpython-310.pyc
+[1.045s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/__init__.py to __init__.cpython-310.pyc
+[1.045s] byte-compiling /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy/utils/__init__.py to __init__.cpython-310.pyc
+[1.045s] running install_data
+[1.045s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/share/ament_index
+[1.045s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/share/ament_index/resource_index
+[1.045s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/share/ament_index/resource_index/packages
+[1.045s] copying resource/drone_autonomy -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/share/ament_index/resource_index/packages
+[1.046s] copying package.xml -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/share/drone_autonomy
+[1.047s] creating /home/parallels/drone_local/drone_ws/install/drone_autonomy/share/drone_autonomy/launch
+[1.047s] copying launch/simple_takeoff.launch.py -> /home/parallels/drone_local/drone_ws/install/drone_autonomy/share/drone_autonomy/launch
+[1.047s] running install_egg_info
+[1.049s] Copying ../../build/drone_autonomy/drone_autonomy.egg-info to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages/drone_autonomy-1.0.0-py3.10.egg-info
+[1.050s] running install_scripts
+[1.064s] Installing circle_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.064s] Installing data_recorder script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.064s] Installing drone_controller script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.064s] Installing figure_eight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.064s] Installing house_inspection script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing mission_executor script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing obstacle_detector script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing orbit_point script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing pursuit_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing rrt_pursuit_single script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing simple_takeoff script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing square_flight script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.065s] Installing waypoint_mission script to /home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/drone_autonomy
+[1.066s] writing list of installed files to '/home/parallels/drone_local/drone_ws/build/drone_autonomy/install.log'
+[1.092s] Invoked command in '/home/parallels/drone_local/drone_ws/src/drone_autonomy' returned '0': CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:/home/parallels/drone_local/drone_ws/install/px4_ros_com LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:/home/parallels/drone_local/drone_ws/install/px4_ros_com/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib PYTHONPATH=/home/parallels/drone_local/drone_ws/build/drone_autonomy/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/drone_autonomy/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/drone_autonomy build --build-base /home/parallels/drone_local/drone_ws/build/drone_autonomy/build install --record /home/parallels/drone_local/drone_ws/build/drone_autonomy/install.log --single-version-externally-managed install_data

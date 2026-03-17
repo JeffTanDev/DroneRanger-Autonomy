@@ -1,0 +1,23 @@
+[0.804s] Invoking command in '/home/parallels/drone_local/drone_ws/build/offboard_test': AMENT_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages:/home/parallels/drone_local/drone_ws/install/px4_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_test/build --no-deps symlink_data
+[0.943s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[0.943s]   warnings.warn(
+[0.962s] running develop
+[1.046s] running egg_info
+[1.047s] writing offboard_test.egg-info/PKG-INFO
+[1.047s] writing dependency_links to offboard_test.egg-info/dependency_links.txt
+[1.047s] writing entry points to offboard_test.egg-info/entry_points.txt
+[1.047s] writing requirements to offboard_test.egg-info/requires.txt
+[1.047s] writing top-level names to offboard_test.egg-info/top_level.txt
+[1.048s] reading manifest file 'offboard_test.egg-info/SOURCES.txt'
+[1.048s] writing manifest file 'offboard_test.egg-info/SOURCES.txt'
+[1.055s] running build_ext
+[1.055s] Creating /home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages/offboard-test.egg-link (link to .)
+[1.055s] Installing obstacle_avoidance_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.055s] Installing obstacle_publisher script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.055s] Installing offboard_orbit_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.055s] Installing offboard_square_mission script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.055s] Installing offboard_takeoff script to /home/parallels/drone_local/drone_ws/install/offboard_test/lib/offboard_test
+[1.055s] 
+[1.055s] Installed /home/parallels/drone_local/drone_ws/build/offboard_test
+[1.055s] running symlink_data
+[1.078s] Invoked command in '/home/parallels/drone_local/drone_ws/build/offboard_test' returned '0': AMENT_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs LD_LIBRARY_PATH=/home/parallels/drone_local/drone_ws/install/px4_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/drone_local/drone_ws/build/offboard_test/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/offboard_test/lib/python3.10/site-packages:/home/parallels/drone_local/drone_ws/install/px4_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/offboard_test/build --no-deps symlink_data

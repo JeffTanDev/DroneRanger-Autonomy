@@ -1,0 +1,17 @@
+[0.671s] Invoking command in '/home/parallels/drone_local/drone_ws/build/tracking': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/tracking/build --no-deps symlink_data
+[0.884s] running develop
+[0.999s] running egg_info
+[1.000s] writing tracking.egg-info/PKG-INFO
+[1.000s] writing dependency_links to tracking.egg-info/dependency_links.txt
+[1.000s] writing entry points to tracking.egg-info/entry_points.txt
+[1.000s] writing requirements to tracking.egg-info/requires.txt
+[1.000s] writing top-level names to tracking.egg-info/top_level.txt
+[1.001s] reading manifest file 'tracking.egg-info/SOURCES.txt'
+[1.001s] writing manifest file 'tracking.egg-info/SOURCES.txt'
+[1.002s] running build_ext
+[1.003s] Creating /home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages/tracking.egg-link (link to .)
+[1.003s] Installing tracker script to /home/parallels/drone_local/drone_ws/install/tracking/lib/tracking
+[1.003s] 
+[1.003s] Installed /home/parallels/drone_local/drone_ws/build/tracking
+[1.003s] running symlink_data
+[1.039s] Invoked command in '/home/parallels/drone_local/drone_ws/build/tracking' returned '0': PYTHONPATH=/home/parallels/drone_local/drone_ws/build/tracking/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/drone_local/drone_ws/install/tracking/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/parallels/drone_local/drone_ws/build/tracking/build --no-deps symlink_data
