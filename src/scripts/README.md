@@ -1,5 +1,30 @@
 # Drone scripts - README
 
+## Project root and scripts symlink
+
+From the project root (`~/drone_local`), you can create a `scripts` symlink so that `~/drone_local/scripts` points to the scripts inside the workspace:
+
+```bash
+cd ~/drone_local
+ln -s drone_ws/src/scripts scripts
+```
+
+Then run scripts from the root with `./scripts/start_drone.sh` or `cd scripts && ./start_drone.sh`.
+
+## Project layout (`tree -L 1`)
+
+At the project root (`~/drone_local`):
+
+```
+.
+├── Drone-Ranger          # Unity project (or symlink to it)
+├── PX4-Autopilot         # PX4 firmware / SITL
+├── docs
+├── drone_ws              # ROS2 workspace (src, build, install)
+├── logs                  # Runtime logs when using --no-tmux
+└── scripts               # This folder (or symlink → drone_ws/src/scripts)
+```
+
 ## One-click launcher: `start_drone.sh`
 
 Start order: **MicroXRCEAgent → PX4 SITL → ROS-TCP-Endpoint → odom_bridge → Mission**.  
