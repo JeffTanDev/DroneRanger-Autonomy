@@ -11,6 +11,7 @@
 - Flight speed: cruise_speed_m_s with velocity feedforward; set PX4 MPC_XY_CRUISE / MPC_XY_VEL_MAX >= this for faster flight.
 - Waypoint advance: new path starts at first waypoint ahead of drone; waypoints already behind are skipped so the drone does not turn back at high speed.
 - Conservative avoidance: larger inflation_cells, buffer_cells, buffer_cost keep path farther from obstacles; reduce for tighter paths or increase for more conservatism.
+- PX4 acceleration/angular limits: use config in drone_autonomy/config/ (px4_acc_angular_limits.params and README_px4_limits.md) to limit MPC_ACC_* and MC_*RATE_MAX.
 
 Topics:
   sub: /fmu/out/vehicle_local_position_v1  (px4_msgs/VehicleLocalPosition) - NED position & heading
@@ -24,6 +25,7 @@ Topics:
 """
 
 import math
+import os
 import time
 from enum import Enum
 import heapq
@@ -35,8 +37,8 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
 from sensor_msgs.msg import CameraInfo, Image, NavSatFix
-from geometry_msgs.msg import Point, Pose, PoseArray, Quaternion
-from std_msgs.msg import Header
+from geometry_msgs.msg import Point, Pose, PoseArray, PoseStamped, Quaternion
+from std_msgs.msg import Header, String
 from px4_msgs.msg import (
     OffboardControlMode,
     TrajectorySetpoint,
@@ -95,6 +97,80 @@ def gps_to_ned(lat_deg: float, lon_deg: float, alt_m: float,
 
 def micros(node: Node) -> int:
     return node.get_clock().now().nanoseconds // 1000
+
+
+def euler_to_quaternion(roll: float, pitch: float, yaw: float) -> tuple:
+    """Roll, pitch, yaw (rad) to quaternion (x, y, z, w). Same convention as Rz(yaw)*Ry(pitch)*Rx(roll)."""
+    cy2 = math.cos(yaw * 0.5)
+    sy2 = math.sin(yaw * 0.5)
+    cp2 = math.cos(pitch * 0.5)
+    sp2 = math.sin(pitch * 0.5)
+    cr2 = math.cos(roll * 0.5)
+    sr2 = math.sin(roll * 0.5)
+    w = cr2 * cp2 * cy2 + sr2 * sp2 * sy2
+    x = sr2 * cp2 * cy2 - cr2 * sp2 * sy2
+    y = cr2 * sp2 * cy2 + sr2 * cp2 * sy2
+    z = cr2 * cp2 * sy2 - sr2 * sp2 * cy2
+    return (x, y, z, w)
+
+
+def smooth_path_sliding_window(path: list, half_window: int) -> list:
+    """Simple sliding-window average smoothing over NED waypoints."""
+    if half_window <= 0 or len(path) < 3:
+        return list(path)
+    n_pts = len(path)
+    win = half_window
+    smoothed = []
+    for i in range(n_pts):
+        i0 = max(0, i - win)
+        i1 = min(n_pts - 1, i + win)
+        cnt = i1 - i0 + 1
+        s_n = s_e = s_d = 0.0
+        for j in range(i0, i1 + 1):
+            n, e, d = path[j]
+            s_n += n
+            s_e += e
+            s_d += d
+        smoothed.append((s_n / cnt, s_e / cnt, s_d / cnt))
+    return smoothed
+
+
+def limit_path_segment_length(path: list, max_seg: float) -> list:
+    """Limit distance between consecutive waypoints to avoid huge jumps (max_seg<=0 disables)."""
+    if max_seg <= 0.0 or len(path) < 2:
+        return list(path)
+    out = [path[0]]
+    import math as _math
+    for i in range(1, len(path)):
+        prev_n, prev_e, prev_d = out[-1]
+        n, e, d = path[i]
+        dn = n - prev_n
+        de = e - prev_e
+        dd = d - prev_d
+        dist = _math.sqrt(dn * dn + de * de + dd * dd)
+        if dist <= max_seg or dist <= 1e-6:
+            out.append((n, e, d))
+        else:
+            scale = max_seg / dist
+            out.append((prev_n + dn * scale, prev_e + de * scale, prev_d + dd * scale))
+    return out
+
+
+# Hardcoded path for depth PNG log (avoids wrong path when node runs from install/build directory)
+DEPTH_LOG_DIR = '/home/jefft/drone_ws/src/drone_autonomy/drone_autonomy/missions/log'
+
+
+def _save_depth_preview_png(depth_m: np.ndarray, depth_max_m: float, png_path: str) -> None:
+    """Save depth array (meters) as viewable PNG: near=dark, far=bright. No matplotlib dependency."""
+    try:
+        from PIL import Image
+        depth_show = np.nan_to_num(np.asarray(depth_m, dtype=np.float64), nan=0.0, posinf=0.0, neginf=0.0)
+        depth_show = np.clip(depth_show, 0.0, float(depth_max_m))
+        scale = max(1e-6, float(depth_max_m))
+        gray = (depth_show / scale * 255).astype(np.uint8)
+        Image.fromarray(gray, mode='L').save(png_path)
+    except Exception:
+        pass
 
 
 # ---------------------------- 3D Grid ----------------------------
@@ -269,16 +345,22 @@ class AStarGridPursuit(Node):
         self.declare_parameter('depth_max_m', 9.9)    # max range in real meters to consider for obstacles
         self.declare_parameter('depth_fov_deg', 120.0)
         self.declare_parameter('min_valid_depth_m', 0.2)  # ignore depth < this in real meters (noise)
+        self.declare_parameter('ground_level_ned_d', 0.0)  # NED down: mark all voxels with d >= this as ground (obstacle); 0 = home altitude
         self.declare_parameter('cruise_speed_m_s', 1.0)  # cruise speed m/s; use with velocity feedforward; set PX4 MPC_XY_CRUISE/MPC_XY_VEL_MAX >= this for faster flight
         self.declare_parameter('waypoint_reach_radius_m', 0.4)
-        self.declare_parameter('replan_interval_s', 2.0)
+        self.declare_parameter('replan_interval_s', 2.5)
+        # Path smoothing (reduces wobble at higher speed): sliding-window average + max segment length in NED
+        self.declare_parameter('path_smooth_window', 7)      # moving-average half-window size (e.g. 3 => window=7); 0 disables smoothing
+        self.declare_parameter('path_max_segment_m', 2.0)    # limit distance between consecutive waypoints; 0 disables segment limiting
         # Conservative avoidance: larger inflation = path farther from obstacles; buffer = flyable but high cost; larger buffer_cost = A* prefers to avoid buffer
         self.declare_parameter('inflation_cells', 1)  # obstacle inflation cells (blocked), ~1m at 0.5m resolution
         self.declare_parameter('buffer_cells', 3)     # extra high-cost layer around inflation; path tends to stay away
         self.declare_parameter('buffer_cost', 30.0)  # cost multiplier for stepping into buffer; larger = prefer detour over skimming obstacles
         self.declare_parameter('debug_obstacle', True)  # log depth/grid/path diagnostics to find obstacle issues
+        self.declare_parameter('log_depth_png', True)   # save depth image as PNG to missions/log on each grid build (for debugging)
         self.declare_parameter('reuse_waypoints', True)  # persist committed waypoints; prefer unchanged points on replan for smoother flight
         # 8.1 Short-term local memory + strong decay: keep only obstacles with last_seen within TTL, OR with current frame
+        self.declare_parameter('short_memory_enabled', True)  # set False to debug: no persistence, only current-frame depth (removes "phantom" points from past frames)
         self.declare_parameter('short_memory_ttl_s', 12.0)  # keep obstacles for 1--2 replan cycles then drop (strong decay)
         self.declare_parameter('max_angular_vel_for_replan_rad_s', 0.5)  # do not replan when angular velocity exceeds this (rad/s)
 
@@ -336,6 +418,9 @@ class AStarGridPursuit(Node):
         self.pub_sp = self.create_publisher(TrajectorySetpoint, '/fmu/in/trajectory_setpoint', qos)
         self.pub_cmd = self.create_publisher(VehicleCommand, '/fmu/in/vehicle_command', qos)
         self.pub_path = self.create_publisher(PoseArray, '/planning/path', 2)
+        self.pub_occupancy_cloud = self.create_publisher(PoseArray, '/planning/occupancy_cloud', 2)
+        self.pub_grid_build_pose = self.create_publisher(PoseStamped, '/planning/grid_build_pose', 2)
+        self.pub_grid_build_depth_info = self.create_publisher(String, '/planning/grid_build_depth_info', 2)
 
         # ---------- Subscribers ----------
         self.create_subscription(VehicleLocalPosition, '/fmu/out/vehicle_local_position_v1', self.on_local_pos, qos)
@@ -477,12 +562,22 @@ class AStarGridPursuit(Node):
         fx, fy = self.cam_fx, self.cam_fy
         cx, cy = self.cam_cx, self.cam_cy
 
+        # Mark ground as obstacle so the planner does not prefer flying downward (NED: larger d = lower altitude)
+        ground_level_ned_d = float(self.get_parameter('ground_level_ned_d').value)
+        for k in range(size_d):
+            cell_d = center_d - half_d + (k + 0.5) * res_z_actual
+            if cell_d >= ground_level_ned_d:
+                grid[:, :, k] = CELL_OBSTACLE
+
         if self.depth_image is None or self.depth_image.size == 0:
             if self.get_parameter('debug_obstacle').value:
                 self._last_grid_diag = {
                     'depth_used': False, 'n_raw': 0, 'n_after': 0,
                     'grid_size': (size_n, size_e, size_d), 'res_xy': res_xy_actual, 'res_z': res_z_actual,
                 }
+            self._publish_occupancy_cloud_empty()
+            self._publish_grid_build_pose()
+            self._publish_grid_build_depth_info(None)
             return grid, size_n, size_e, size_d, res_xy_actual, res_z_actual, half_xy, half_xy, half_d
 
         depth_summary = {}
@@ -507,6 +602,9 @@ class AStarGridPursuit(Node):
         depth_summary['depth_max_m'] = depth_max
         depth_summary['attitude_rad'] = 'roll=%.3f pitch=%.3f yaw=%.3f' % (self.roll, self.pitch, self.heading)
 
+        if self.get_parameter('log_depth_png').value:
+            self._save_depth_to_log(depth_scale, depth_max)
+
         step = 2
         uu, vv = np.meshgrid(
             np.arange(0, w, step, dtype=np.int32),
@@ -527,6 +625,9 @@ class AStarGridPursuit(Node):
         depth_summary['valid_in_range_count'] = n_valid
         steps.append('Scale: raw * %.1f -> real m. Filter valid: [%.2f, %.2f) m -> n_valid=%d' % (depth_scale, min_d, depth_max, n_valid))
         if n_valid == 0:
+            self._publish_occupancy_cloud_empty()
+            self._publish_grid_build_pose()
+            self._publish_grid_build_depth_info(depth_summary)
             return grid, size_n, size_e, size_d, res_xy_actual, res_z_actual, half_xy, half_xy, half_d
         near_thresh = depth_max - 0.05
         near_mask = d_real < near_thresh
@@ -542,6 +643,9 @@ class AStarGridPursuit(Node):
                     'depth_used': True, 'n_raw': 0, 'n_after': 0,
                     'grid_size': (size_n, size_e, size_d), 'res_xy': res_xy_actual, 'res_z': res_z_actual,
                 }
+            self._publish_occupancy_cloud_empty()
+            self._publish_grid_build_pose()
+            self._publish_grid_build_depth_info(depth_summary)
             return grid, size_n, size_e, size_d, res_xy_actual, res_z_actual, half_xy, half_xy, half_d
 
         steps.append('Project to camera (x_c,y_c,z_c) then body (forward,right,down) then NED with R_wb(roll,pitch,yaw)')
@@ -550,7 +654,9 @@ class AStarGridPursuit(Node):
         d_real = d_real[valid]
 
         x_c = (u_flat - cx) * d_real / fx  # camera right (real m)
-        y_c = (v_flat - cy) * d_real / fy  # camera down (real m)
+        # Image v: use (cy - v) so that "top of image" (small v in row-0-at-top) maps to positive Y_c = body down.
+        # Otherwise grid is displaced upward (obstacles above real objects); Unity/OAK may use row 0 = top with Y down in scene.
+        y_c = (cy - v_flat) * d_real / fy  # camera down (real m)
         z_c = d_real                         # camera forward (real m)
         # Body FRD: Forward=z_c, Right=x_c, Down=y_c -> v_body = (forward, right, down)
         P_body = np.column_stack((z_c, x_c, y_c))
@@ -580,22 +686,25 @@ class AStarGridPursuit(Node):
         # 8.1 Short-term local memory + strong decay: previous-frame obstacles in current local range OR'd in; only keep within TTL
         t_s = self.get_clock().now().nanoseconds * 1e-9
         ttl_s = float(self.get_parameter('short_memory_ttl_s').value)
-        self._short_memory_voxels = [(n, e, d, ts) for (n, e, d, ts) in self._short_memory_voxels if (t_s - ts) <= ttl_s]
-        current_obs_ned = []
-        for idx in range(len(gi)):
-            n, e, d = grid_to_world_3d(int(gi[idx]), int(gj[idx]), int(gk[idx]), center_n, center_e, center_d,
-                                        half_xy, half_xy, half_d, res_xy_actual, res_z_actual)
-            current_obs_ned.append((n, e, d))
-        for (n, e, d, _ts) in self._short_memory_voxels:
-            ijk = world_to_grid_3d(n, e, d, center_n, center_e, center_d, half_xy, half_xy, half_d,
-                                   res_xy_actual, res_z_actual, size_n, size_e, size_d)
-            if ijk is not None:
-                grid[ijk[0], ijk[1], ijk[2]] = CELL_OBSTACLE
-        for (n, e, d) in current_obs_ned:
-            self._short_memory_voxels.append((n, e, d, t_s))
+        use_short_memory = bool(self.get_parameter('short_memory_enabled').value)
+        if use_short_memory:
+            self._short_memory_voxels = [(n, e, d, ts) for (n, e, d, ts) in self._short_memory_voxels if (t_s - ts) <= ttl_s]
+            current_obs_ned = []
+            for idx in range(len(gi)):
+                n, e, d = grid_to_world_3d(int(gi[idx]), int(gj[idx]), int(gk[idx]), center_n, center_e, center_d,
+                                            half_xy, half_xy, half_d, res_xy_actual, res_z_actual)
+                current_obs_ned.append((n, e, d))
+            for (n, e, d, _ts) in self._short_memory_voxels:
+                ijk = world_to_grid_3d(n, e, d, center_n, center_e, center_d, half_xy, half_xy, half_d,
+                                       res_xy_actual, res_z_actual, size_n, size_e, size_d)
+                if ijk is not None:
+                    grid[ijk[0], ijk[1], ijk[2]] = CELL_OBSTACLE
+            for (n, e, d) in current_obs_ned:
+                self._short_memory_voxels.append((n, e, d, t_s))
 
         n_raw = int(np.sum(grid == CELL_OBSTACLE))
-        steps.append('Mark obstacle cells (+ short memory TTL=%.1fs): n_raw=%d' % (ttl_s, n_raw))
+        steps.append('Mark obstacle cells%s: n_raw=%d' % (' (+ short memory TTL=%.1fs)' % ttl_s if use_short_memory else ' (current frame only)', n_raw))
+        # inflation_cells=1 in 3D means a 3x3x3 cube around each obstacle voxel, so with many depth points (e.g. 41k) the result looks thick
         if inflate > 0:
             occupied = np.where(grid == CELL_OBSTACLE)
             oi, oj, ok = occupied[0], occupied[1], occupied[2]
@@ -628,7 +737,93 @@ class AStarGridPursuit(Node):
                 'depth_used': True, 'n_raw': n_raw, 'n_after': n_after,
                 'grid_size': (size_n, size_e, size_d), 'res_xy': res_xy_actual, 'res_z': res_z_actual,
             }
+        self._publish_occupancy_cloud(
+            grid, size_n, size_e, size_d,
+            center_n, center_e, center_d,
+            half_xy, half_xy, half_d, res_xy_actual, res_z_actual,
+        )
+        self._publish_grid_build_pose()
+        self._publish_grid_build_depth_info(depth_summary)
         return grid, size_n, size_e, size_d, res_xy_actual, res_z_actual, half_xy, half_xy, half_d
+
+    def _publish_occupancy_cloud(
+        self,
+        grid: np.ndarray,
+        size_n: int, size_e: int, size_d: int,
+        center_n: float, center_e: float, center_d: float,
+        half_n: float, half_e: float, half_d: float,
+        res_xy: float, res_z: float,
+    ):
+        """Publish occupied voxels as PoseArray (NED) for visualization; exclude ground (d >= ground_level_ned_d) to reduce payload.
+        Points are in world NED (grid build time); receiver should use them as-is."""
+        ground_level_ned_d = float(self.get_parameter('ground_level_ned_d').value)
+        occupied = np.where(grid == CELL_OBSTACLE)
+        oi, oj, ok = occupied[0], occupied[1], occupied[2]
+        # Collect non-ground obstacle points only (d < ground_level_ned_d)
+        points_ned = []
+        for idx in range(len(oi)):
+            n, e, d = grid_to_world_3d(
+                int(oi[idx]), int(oj[idx]), int(ok[idx]),
+                center_n, center_e, center_d,
+                half_n, half_e, half_d, res_xy, res_z,
+            )
+            if d < ground_level_ned_d:
+                points_ned.append((n, e, d))
+        n_occ = len(points_ned)
+        if n_occ > 4000:
+            idx = np.random.default_rng(42).choice(n_occ, size=4000, replace=False)
+            points_ned = [points_ned[i] for i in idx]
+        msg = PoseArray()
+        msg.header = Header()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'world'
+        for (n, e, d) in points_ned:
+            p = Pose()
+            p.position = Point(x=float(n), y=float(e), z=float(d))
+            p.orientation = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
+            msg.poses.append(p)
+        self.pub_occupancy_cloud.publish(msg)
+
+    def _publish_occupancy_cloud_empty(self):
+        """Publish empty occupancy cloud so visualizer clears (e.g. when no depth or skip build)."""
+        msg = PoseArray()
+        msg.header = Header()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'world'
+        self.pub_occupancy_cloud.publish(msg)
+
+    def _publish_grid_build_pose(self):
+        """Publish drone pose (NED position + attitude) at the moment of grid build for debugging/alignment."""
+        msg = PoseStamped()
+        msg.header = Header()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'world'
+        msg.pose.position = Point(x=float(self.px), y=float(self.py), z=float(self.pz))
+        qx, qy, qz, qw = euler_to_quaternion(self.roll, self.pitch, self.heading)
+        msg.pose.orientation = Quaternion(x=qx, y=qy, z=qz, w=qw)
+        self.pub_grid_build_pose.publish(msg)
+
+    def _publish_grid_build_depth_info(self, depth_summary=None):
+        """Publish depth image summary string for debugging (or short reason when no depth)."""
+        msg = String()
+        if depth_summary is not None:
+            msg.data = '; '.join('%s=%s' % (k, v) for k, v in sorted(depth_summary.items()))
+        else:
+            msg.data = 'no_depth_image'
+        self.pub_grid_build_depth_info.publish(msg)
+
+    def _save_depth_to_log(self, depth_scale: float, depth_max: float) -> None:
+        """Save current depth image as PNG to DEPTH_LOG_DIR (near=dark, far=bright) for debugging."""
+        if self.depth_image is None or self.depth_image.size == 0:
+            return
+        try:
+            os.makedirs(DEPTH_LOG_DIR, exist_ok=True)
+        except OSError:
+            return
+        depth_m = self.depth_image.astype(np.float64) * depth_scale
+        ts_ns = self.get_clock().now().nanoseconds
+        png_path = os.path.join(DEPTH_LOG_DIR, 'depth_{}.png'.format(ts_ns))
+        _save_depth_preview_png(depth_m, depth_max, png_path)
 
     def plan_path_ned(self) -> list:
         """
@@ -717,6 +912,12 @@ class AStarGridPursuit(Node):
             n, e, d = grid_to_world_3d(i, j, k, center_n, center_e, center_d,
                                        half_n, half_e, half_d, res_xy, res_z)
             new_path.append((n, e, d))
+        # Path smoothing: sliding-window average + max segment length to reduce wobble at higher speeds
+        smooth_win = int(self.get_parameter('path_smooth_window').value)
+        max_seg = float(self.get_parameter('path_max_segment_m').value)
+        if smooth_win > 0 or max_seg > 0.0:
+            tmp_path = smooth_path_sliding_window(new_path, smooth_win)
+            new_path = limit_path_segment_length(tmp_path, max_seg)
 
         reuse = self.get_parameter('reuse_waypoints').value
         old_path = getattr(self, 'committed_path_ned', []) or []
@@ -750,6 +951,9 @@ class AStarGridPursuit(Node):
                                                        half_n, half_e, half_d, res_xy, res_z)
                             tail_ned.append((n, e, d))
                         merged = valid_old + tail_ned[1:]
+                        if smooth_win > 0 or max_seg > 0.0:
+                            tmp_path = smooth_path_sliding_window(merged, smooth_win)
+                            merged = limit_path_segment_length(tmp_path, max_seg)
                         self.committed_path_ned = list(merged)
                         if self.get_parameter('debug_obstacle').value:
                             self.get_logger().info(
