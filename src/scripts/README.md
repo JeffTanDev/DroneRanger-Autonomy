@@ -25,6 +25,85 @@ At the project root (`~/drone_local`):
 └── scripts               # This folder (or symlink → drone_ws/src/scripts)
 ```
 
+## drone_ws: submodule init and build
+
+适用场景：**第一次克隆仓库**、**拉取含 `.gitmodules` 的更新**，或 **`src/ROS-TCP-Endpoint` 等目录为空**时。
+
+`drone_ws` 通过 **Git 子模块** 拉取官方依赖（见 `drone_ws/.gitmodules`）：
+
+| Submodule path | 用途 |
+|----------------|------|
+| `src/ROS-TCP-Endpoint` | Unity ↔ ROS 2 TCP（`main-ros2` 分支） |
+| `src/px4_msgs` | PX4 消息定义 |
+| `src/px4_ros_com` | PX4 ↔ ROS 2 工具包 |
+
+### 1) 初始化子模块（必须至少做一次）
+
+在 **`drone_ws` 作为 Git 仓库根** 的目录下执行（路径按你的机器修改）：
+
+```bash
+cd ~/drone_local/drone_ws
+git submodule update --init --recursive
+```
+
+若你是 **刚 `git clone` 了含 `.gitmodules` 的仓库**，上面这一条会把三个子模块检出到 `src/` 下。  
+网络或权限失败时，先检查能否访问 GitHub，再重试。
+
+### 2) 编译工作空间（推荐用仓库脚本）
+
+项目根下已提供 **`scripts/build_ros.sh`**（会优先跑子模块更新，再 `rosdep`（若可用）、再 `colcon build`）：
+
+```bash
+cd ~/drone_local
+chmod +x scripts/build_ros.sh
+# 全量编译，并确保 px4_msgs / px4_ros_com 存在（子模块或 fallback clone）
+./scripts/build_ros.sh --with-px4
+```
+
+常用变体：
+
+```bash
+# 只编译某个包及其依赖（例如只改 offboard_test）
+./scripts/build_ros.sh --with-px4 offboard_test
+
+# 已有子模块且不想每次 submodule update
+./scripts/build_ros.sh --skip-submodules --with-px4 offboard_test
+
+# 跳过 rosdep（依赖已手动装齐时）
+./scripts/build_ros.sh --with-px4 --no-rosdep
+```
+
+### 3) 载入环境（每个新终端都要）
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/drone_local/drone_ws/install/setup.bash
+```
+
+可写入 `~/.bashrc` 中对应两行，避免每次手敲。
+
+### 4) 手动流程（等价于脚本在做什么）
+
+若不用 `build_ros.sh`，可手动：
+
+```bash
+cd ~/drone_local/drone_ws
+git submodule update --init --recursive
+source /opt/ros/humble/setup.bash
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
+colcon build --symlink-install
+source install/setup.bash
+```
+
+仅改少量包时可用：`colcon build --symlink-install --packages-select offboard_test`。
+
+### 5) 构建产物与 Git
+
+`build/`、`install/`、`log/` 已在 `drone_ws/.gitignore` 中忽略，**不要** 把它们 `git add` 进仓库。
+
+---
+
 ## One-click launcher: `start_drone.sh`
 
 Start order: **MicroXRCEAgent → PX4 SITL → ROS-TCP-Endpoint → odom_bridge → Mission**.  
@@ -42,7 +121,7 @@ By default, it uses `$DRONE_ROOT/scripts/odom_bridge.py` (repo-local).
 
 ### Prerequisites
 
-- ROS 2 Humble installed; `drone_ws` built at least once (`colcon build`).
+- ROS 2 Humble installed; `drone_ws` built at least once (see **[drone_ws: submodule init and build](#drone_ws-submodule-init-and-build)**).
 - If starting PX4: `PX4-Autopilot` exists and `make px4_sitl_default none` works (or another SITL type).
 - If using Unity: Unity ROSConnection IP/Port matches `ROS_IP`/`ROS_TCP_PORT`.
 
