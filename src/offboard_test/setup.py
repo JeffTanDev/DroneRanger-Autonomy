@@ -25,7 +25,7 @@ setup(
             'offboard_takeoff = offboard_test.offboard_takeoff:main',
             'offboard_square_mission = offboard_test.offboard_square_mission:main',
             'obstacle_avoidance_mission = offboard_test.obstacle_avoidance_mission:main',
-            'obstacle_publisher = offboard_test.obstacle_publisher:main',
+            'obstacle_publisher = offboard_test.obstacle_publisher:main'
         ],
     },
 )
