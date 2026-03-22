@@ -1,2 +1,7 @@
 # Recordings folder and all files under it
 src/drone_autonomy/recordings/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
