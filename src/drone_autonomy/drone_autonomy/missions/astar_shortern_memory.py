@@ -83,13 +83,14 @@ def rotation_body_to_ned(roll: float, pitch: float, yaw: float) -> np.ndarray:
 
 def gps_to_ned(lat_deg: float, lon_deg: float, alt_m: float,
                home_lat_deg: float, home_lon_deg: float, home_alt_m: float):
-    """Convert GPS (lat/lon/alt) to local NED using a home reference."""
+    """Convert GPS (lat/lon/alt) to local NED using a home reference.
+    Matches PX4 local frame: north/east positive toward N/E; down positive below home alt."""
     earth_radius_m = 6378137.0
     lat_rad = math.radians(lat_deg)
     home_lat_rad = math.radians(home_lat_deg)
     d_lat = lat_rad - home_lat_rad
     d_lon = math.radians(lon_deg - home_lon_deg)
-    north = -d_lat * earth_radius_m
+    north = d_lat * earth_radius_m
     east = d_lon * earth_radius_m * math.cos(home_lat_rad)
     down = -(alt_m - home_alt_m)
     return north, east, down
@@ -348,7 +349,7 @@ class AStarGridPursuit(Node):
         self.declare_parameter('ground_level_ned_d', 0.0)  # NED down: mark all voxels with d >= this as ground (obstacle); 0 = home altitude
         self.declare_parameter('cruise_speed_m_s', 1.0)  # cruise speed m/s; use with velocity feedforward; set PX4 MPC_XY_CRUISE/MPC_XY_VEL_MAX >= this for faster flight
         self.declare_parameter('waypoint_reach_radius_m', 0.4)
-        self.declare_parameter('replan_interval_s', 2.5)
+        self.declare_parameter('replan_interval_s', 1.0)
         # Path smoothing (reduces wobble at higher speed): sliding-window average + max segment length in NED
         self.declare_parameter('path_smooth_window', 7)      # moving-average half-window size (e.g. 3 => window=7); 0 disables smoothing
         self.declare_parameter('path_max_segment_m', 2.0)    # limit distance between consecutive waypoints; 0 disables segment limiting
