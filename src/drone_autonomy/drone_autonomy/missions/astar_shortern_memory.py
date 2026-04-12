@@ -9,7 +9,7 @@
 - 8.1 Short-term local memory + strong decay: previous-frame obstacles within TTL are OR'd into current grid (no world frame; short TTL avoids buildup).
 - No replan when angular velocity is high (avoids bad replan from rotation/alignment error).
 - Flight speed: cruise_speed_m_s with velocity feedforward; set PX4 MPC_XY_CRUISE / MPC_XY_VEL_MAX >= this for faster flight.
-- Waypoint advance: new path starts at first waypoint ahead of drone; waypoints already behind are skipped so the drone does not turn back at high speed.
+- Waypoint advance: follow polyline by reach radius (not goal-dot); may fly backward along path when retreating. Replan snaps to nearest waypoint with a peak-index rollback limit + stuck-release to avoid ping-ponging to path start.
 - Conservative avoidance: larger inflation_cells, buffer_cells, buffer_cost keep path farther from obstacles; reduce for tighter paths or increase for more conservatism.
 - PX4 acceleration/angular limits: use config in drone_autonomy/config/ (px4_acc_angular_limits.params and README_px4_limits.md) to limit MPC_ACC_* and MC_*RATE_MAX.
 
@@ -31,6 +31,7 @@ from enum import Enum
 import heapq
 
 import numpy as np
+from scipy.interpolate import splprep, splev
 
 import rclpy
 from rclpy.node import Node
@@ -115,46 +116,43 @@ def euler_to_quaternion(roll: float, pitch: float, yaw: float) -> tuple:
     return (x, y, z, w)
 
 
-def smooth_path_sliding_window(path: list, half_window: int) -> list:
-    """Simple sliding-window average smoothing over NED waypoints."""
-    if half_window <= 0 or len(path) < 3:
-        return list(path)
-    n_pts = len(path)
-    win = half_window
-    smoothed = []
-    for i in range(n_pts):
-        i0 = max(0, i - win)
-        i1 = min(n_pts - 1, i + win)
-        cnt = i1 - i0 + 1
-        s_n = s_e = s_d = 0.0
-        for j in range(i0, i1 + 1):
-            n, e, d = path[j]
-            s_n += n
-            s_e += e
-            s_d += d
-        smoothed.append((s_n / cnt, s_e / cnt, s_d / cnt))
-    return smoothed
+def smooth_path_bspline(path: list, smoothing_s: float, num_points: int) -> list:
+    """
+    Parametric B-spline over NED waypoints (scipy splprep / splev), uniform samples in curve parameter.
 
-
-def limit_path_segment_length(path: list, max_seg: float) -> list:
-    """Limit distance between consecutive waypoints to avoid huge jumps (max_seg<=0 disables)."""
-    if max_seg <= 0.0 or len(path) < 2:
+    smoothing_s: splprep ``s``; 0.0 fits through control points; larger values relax the curve (may deviate).
+    num_points: number of output samples (>= 2). If < 2, returns a copy of path unchanged.
+    """
+    if num_points < 2 or len(path) < 2:
         return list(path)
-    out = [path[0]]
-    import math as _math
-    for i in range(1, len(path)):
-        prev_n, prev_e, prev_d = out[-1]
-        n, e, d = path[i]
-        dn = n - prev_n
-        de = e - prev_e
-        dd = d - prev_d
-        dist = _math.sqrt(dn * dn + de * de + dd * dd)
-        if dist <= max_seg or dist <= 1e-6:
-            out.append((n, e, d))
-        else:
-            scale = max_seg / dist
-            out.append((prev_n + dn * scale, prev_e + de * scale, prev_d + dd * scale))
-    return out
+    pts = np.asarray(path, dtype=np.float64)
+    if pts.shape[0] >= 2:
+        keep = [0]
+        for i in range(1, len(pts)):
+            if float(np.linalg.norm(pts[i] - pts[i - 1])) > 1e-9:
+                keep.append(i)
+        pts = pts[keep]
+    n = pts.shape[0]
+    if n < 2:
+        return list(path)
+    if n == 2:
+        t = np.linspace(0.0, 1.0, num_points)
+        delta = pts[1] - pts[0]
+        out = pts[0] + np.outer(t, delta)
+        return [(float(out[i, 0]), float(out[i, 1]), float(out[i, 2])) for i in range(num_points)]
+
+    k = min(3, n - 1)
+    try:
+        tck, _u = splprep(
+            [pts[:, 0], pts[:, 1], pts[:, 2]],
+            s=float(smoothing_s),
+            k=k,
+        )
+    except (ValueError, TypeError):
+        return list(path)
+    u_fine = np.linspace(0.0, 1.0, num_points)
+    x, y, z = splev(u_fine, tck)
+    return [(float(x[i]), float(y[i]), float(z[i])) for i in range(num_points)]
 
 
 # Hardcoded path for depth PNG log (avoids wrong path when node runs from install/build directory)
@@ -213,17 +211,23 @@ def is_point_free_in_grid(n: float, e: float, d: float, grid, center_n: float, c
     return grid[i, j, k] != CELL_OBSTACLE
 
 
-def is_waypoint_ahead(wn: float, we: float, wd: float,
-                      px: float, py: float, pz: float,
-                      goal_n: float, goal_e: float, goal_d: float) -> bool:
-    """True if waypoint (wn,we,wd) is ahead of current (px,py,pz) toward goal (dot product > 0)."""
-    dn = wn - px
-    de = we - py
-    dd = wd - pz
-    gn = goal_n - px
-    ge = goal_e - py
-    gd = goal_d - pz
-    return (dn * gn + de * ge + dd * gd) > 0.0
+def ned_distance_sq(pn: float, pe: float, pd: float, qn: float, qe: float, qd: float) -> float:
+    dn, de, dd = pn - qn, pe - qe, pd - qd
+    return dn * dn + de * de + dd * dd
+
+
+def closest_path_waypoint_index(path: list, px: float, py: float, pz: float) -> int:
+    """Index of path waypoint closest to (px,py,pz) in NED (Euclidean)."""
+    if not path:
+        return 0
+    best_i = 0
+    best_d2 = float('inf')
+    for i, (wn, we, wd) in enumerate(path):
+        d2 = ned_distance_sq(px, py, pz, wn, we, wd)
+        if d2 < best_d2:
+            best_d2 = d2
+            best_i = i
+    return best_i
 
 
 # Grid cell values: 0=free, 1=obstacle (blocked), 2=buffer (flyable but high cost, avoid when possible)
@@ -350,9 +354,14 @@ class AStarGridPursuit(Node):
         self.declare_parameter('cruise_speed_m_s', 1.0)  # cruise speed m/s; use with velocity feedforward; set PX4 MPC_XY_CRUISE/MPC_XY_VEL_MAX >= this for faster flight
         self.declare_parameter('waypoint_reach_radius_m', 0.4)
         self.declare_parameter('replan_interval_s', 1.0)
-        # Path smoothing (reduces wobble at higher speed): sliding-window average + max segment length in NED
-        self.declare_parameter('path_smooth_window', 7)      # moving-average half-window size (e.g. 3 => window=7); 0 disables smoothing
-        self.declare_parameter('path_max_segment_m', 2.0)    # limit distance between consecutive waypoints; 0 disables segment limiting
+        # Path smoothing: 3D parametric B-spline (splprep/splev) + resample along curve
+        self.declare_parameter('path_bspline_enable', True)
+        self.declare_parameter('path_bspline_s', 0.0)           # splprep smoothing; 0 = interpolate through waypoints
+        self.declare_parameter('path_bspline_num_points', 64)   # samples on the spline; <2 leaves path unchanged
+        # Path following: allow backward flight along polyline; limit replan snap-back vs peak progress + stuck release
+        self.declare_parameter('path_max_retreat_waypoints', 12)   # replan: waypoint_idx >= peak_idx - this (reduces ping-pong to path start)
+        self.declare_parameter('path_stuck_progress_m', 0.45)       # distance to active wp worse than best by this -> accumulating stuck time
+        self.declare_parameter('path_stuck_release_s', 2.5)        # stuck this long -> lower peak & step one wp backward
         # Conservative avoidance: larger inflation = path farther from obstacles; buffer = flyable but high cost; larger buffer_cost = A* prefers to avoid buffer
         self.declare_parameter('inflation_cells', 1)  # obstacle inflation cells (blocked), ~1m at 0.5m resolution
         self.declare_parameter('buffer_cells', 3)     # extra high-cost layer around inflation; path tends to stay away
@@ -407,6 +416,10 @@ class AStarGridPursuit(Node):
         self.committed_path_ned = [] # last committed path for reuse: on replan, keep waypoints that stay free
         self.waypoint_idx = 0
         self.last_replan_s = 0.0
+        self._wp_peak_idx = 0              # max waypoint index achieved this leg (anti oscillation to path start)
+        self._path_track_wp_idx = -1       # waypoint_idx when stuck tracker was reset
+        self._best_dist_to_active_wp = float('inf')
+        self._stuck_since_s = None       # wall time when regression vs best dist began
         self._depth_diag_ts = 0.0    # throttle depth callback diagnostics
 
         # ---------- Publishers ----------
@@ -913,12 +926,12 @@ class AStarGridPursuit(Node):
             n, e, d = grid_to_world_3d(i, j, k, center_n, center_e, center_d,
                                        half_n, half_e, half_d, res_xy, res_z)
             new_path.append((n, e, d))
-        # Path smoothing: sliding-window average + max segment length to reduce wobble at higher speeds
-        smooth_win = int(self.get_parameter('path_smooth_window').value)
-        max_seg = float(self.get_parameter('path_max_segment_m').value)
-        if smooth_win > 0 or max_seg > 0.0:
-            tmp_path = smooth_path_sliding_window(new_path, smooth_win)
-            new_path = limit_path_segment_length(tmp_path, max_seg)
+        if bool(self.get_parameter('path_bspline_enable').value):
+            new_path = smooth_path_bspline(
+                new_path,
+                float(self.get_parameter('path_bspline_s').value),
+                int(self.get_parameter('path_bspline_num_points').value),
+            )
 
         reuse = self.get_parameter('reuse_waypoints').value
         old_path = getattr(self, 'committed_path_ned', []) or []
@@ -928,13 +941,11 @@ class AStarGridPursuit(Node):
                 return is_point_free_in_grid(
                     w[0], w[1], w[2], grid, center_n, center_e, center_d,
                     half_n, half_e, half_d, res_xy, res_z, size_n, size_e, size_d)
-            def ahead(w):
-                return is_waypoint_ahead(w[0], w[1], w[2], center_n, center_e, center_d, goal_n, goal_e, goal_d)
 
+            # Suffix from waypoint closest to drone (allows backward reuse without skipping to a non-contiguous "ahead" set)
+            co = closest_path_waypoint_index(old_path, center_n, center_e, center_d)
             valid_old = []
-            for w in old_path:
-                if not ahead(w):
-                    continue
+            for w in old_path[co:]:
                 if not free(w):
                     break
                 valid_old.append(w)
@@ -952,9 +963,12 @@ class AStarGridPursuit(Node):
                                                        half_n, half_e, half_d, res_xy, res_z)
                             tail_ned.append((n, e, d))
                         merged = valid_old + tail_ned[1:]
-                        if smooth_win > 0 or max_seg > 0.0:
-                            tmp_path = smooth_path_sliding_window(merged, smooth_win)
-                            merged = limit_path_segment_length(tmp_path, max_seg)
+                        if bool(self.get_parameter('path_bspline_enable').value):
+                            merged = smooth_path_bspline(
+                                merged,
+                                float(self.get_parameter('path_bspline_s').value),
+                                int(self.get_parameter('path_bspline_num_points').value),
+                            )
                         self.committed_path_ned = list(merged)
                         if self.get_parameter('debug_obstacle').value:
                             self.get_logger().info(
@@ -1073,6 +1087,10 @@ class AStarGridPursuit(Node):
                     self.path_ned = []
                     self.committed_path_ned = []
                     self.waypoint_idx = 0
+                    self._wp_peak_idx = 0
+                    self._path_track_wp_idx = -1
+                    self._best_dist_to_active_wp = float('inf')
+                    self._stuck_since_s = None
                     self.last_replan_s = t_s
                     self.get_logger().info("[stage] HOVER_STABLE -> PLAN_FOLLOW")
             return
@@ -1099,7 +1117,7 @@ class AStarGridPursuit(Node):
             )
             skip_replan_due_to_ang_vel = ang_vel_mag > max_ang_vel
 
-            # Goal in NED for is_waypoint_ahead (skip waypoints behind drone at high speed)
+            # Goal in NED for yaw toward setpoint
             tgt_alt = self.tgt_alt if self.tgt_alt is not None else self.home_alt
             goal_n, goal_e, goal_d = gps_to_ned(
                 self.tgt_lat, self.tgt_lon, tgt_alt,
@@ -1109,38 +1127,75 @@ class AStarGridPursuit(Node):
             # Replan when no path or interval elapsed; skip replan when angular velocity is too high
             if (not self.path_ned or (t_s - self.last_replan_s) >= replan_interval) and not skip_replan_due_to_ang_vel:
                 self.path_ned = self.plan_path_ned()
-                # Start at first waypoint ahead of drone so we do not turn back for a waypoint already behind
-                self.waypoint_idx = 0
-                for i in range(len(self.path_ned)):
-                    wn, we, wd = self.path_ned[i]
-                    if is_waypoint_ahead(wn, we, wd, self.px, self.py, self.pz, goal_n, goal_e, goal_d):
-                        self.waypoint_idx = i
-                        break
-                    self.waypoint_idx = i
-                if self.waypoint_idx >= len(self.path_ned):
-                    self.waypoint_idx = max(0, len(self.path_ned) - 1)
+                if self.path_ned:
+                    closest_i = closest_path_waypoint_index(self.path_ned, self.px, self.py, self.pz)
+                    max_retreat = max(0, int(self.get_parameter('path_max_retreat_waypoints').value))
+                    floor_i = max(0, self._wp_peak_idx - max_retreat)
+                    last_i = len(self.path_ned) - 1
+                    self.waypoint_idx = min(max(closest_i, floor_i), last_i)
+                    while self.waypoint_idx < len(self.path_ned) - 1:
+                        wn, we, wd = self.path_ned[self.waypoint_idx]
+                        d2 = ned_distance_sq(self.px, self.py, self.pz, wn, we, wd)
+                        if d2 > reach_radius * reach_radius:
+                            break
+                        self.waypoint_idx += 1
+                    if self.waypoint_idx >= len(self.path_ned):
+                        self.waypoint_idx = max(0, len(self.path_ned) - 1)
+                    self._wp_peak_idx = max(self._wp_peak_idx, self.waypoint_idx)
+                    self._path_track_wp_idx = -1
+                    self._best_dist_to_active_wp = float('inf')
+                    self._stuck_since_s = None
+                else:
+                    self._wp_peak_idx = 0
+                    self._path_track_wp_idx = -1
+                    self._best_dist_to_active_wp = float('inf')
+                    self._stuck_since_s = None
                 self.last_replan_s = t_s
                 if self.path_ned:
                     self.get_logger().info(f"[plan] 3D A* path length={len(self.path_ned)} start_idx={self.waypoint_idx}")
                     self.publish_path_ned(self.path_ned)
 
             if not self.path_ned:
+                self._wp_peak_idx = 0
+                self._path_track_wp_idx = -1
+                self._best_dist_to_active_wp = float('inf')
+                self._stuck_since_s = None
                 self.publish_sp(self.px, self.py, zD_goal, self.heading)
                 return
 
-            # Advance waypoint when within reach_radius or when current waypoint is already behind (skip overflown waypoints at high speed)
-            while self.waypoint_idx < len(self.path_ned):
+            # Advance along polyline only when within reach_radius (allows flying "backward" toward earlier indices when retreating)
+            while self.waypoint_idx < len(self.path_ned) - 1:
                 wn, we, wd = self.path_ned[self.waypoint_idx]
                 dist = math.sqrt((wn - self.px)**2 + (we - self.py)**2 + (wd - self.pz)**2)
-                ahead = is_waypoint_ahead(wn, we, wd, self.px, self.py, self.pz, goal_n, goal_e, goal_d)
-                reached = dist <= reach_radius
-                is_last = self.waypoint_idx >= len(self.path_ned) - 1
-                if is_last:
-                    break
-                if reached or not ahead:
+                if dist <= reach_radius:
                     self.waypoint_idx += 1
+                    self._wp_peak_idx = max(self._wp_peak_idx, self.waypoint_idx)
                 else:
                     break
+
+            # Stuck vs current waypoint: release peak and step back one wp so we can retreat instead of oscillating at a dead end
+            wn, we, wd = self.path_ned[self.waypoint_idx]
+            dist_active = math.sqrt((wn - self.px)**2 + (we - self.py)**2 + (wd - self.pz)**2)
+            prog_m = float(self.get_parameter('path_stuck_progress_m').value)
+            release_s = float(self.get_parameter('path_stuck_release_s').value)
+            if self.waypoint_idx != self._path_track_wp_idx:
+                self._path_track_wp_idx = self.waypoint_idx
+                self._best_dist_to_active_wp = dist_active
+                self._stuck_since_s = None
+            else:
+                self._best_dist_to_active_wp = min(self._best_dist_to_active_wp, dist_active)
+                if dist_active > self._best_dist_to_active_wp + prog_m:
+                    if self._stuck_since_s is None:
+                        self._stuck_since_s = t_s
+                    elif (t_s - self._stuck_since_s) >= release_s:
+                        self._wp_peak_idx = max(0, self.waypoint_idx - 1)
+                        if self.waypoint_idx > 0:
+                            self.waypoint_idx -= 1
+                        self._path_track_wp_idx = -1
+                        self._best_dist_to_active_wp = float('inf')
+                        self._stuck_since_s = None
+                else:
+                    self._stuck_since_s = None
 
             if self.waypoint_idx >= len(self.path_ned):
                 self.publish_sp(self.px, self.py, self.pz, self.heading)
